@@ -21,9 +21,12 @@ jobs:
 
     - name: Install Python dependencies
       run: |
-        pip install requests beautifulsoup4 supabase
+        pip install requests beautifulsoup4 supabase-py
 
     - name: Scrape GitHub Trending Repositories and Upload to Supabase
+      env:
+        SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+        SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
       run: |
         python - <<EOF
         import requests
@@ -33,21 +36,32 @@ jobs:
         from supabase import create_client, Client
         import os
 
+        # Initialize Supabase client
+        SUPABASE_URL = os.getenv('SUPABASE_URL')
+        SUPABASE_KEY = os.getenv('SUPABASE_KEY')
+        supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
+
         # GitHub Trending URL
         URL = 'https://github.com/trending'
 
-        # Function to scrape trending repositories from GitHub
         def scrape_trending_repos():
+            print("Fetching GitHub trending repositories...")
+            # Fetch the GitHub Trending Page
             response = requests.get(URL)
             if response.status_code != 200:
                 print(f"Failed to retrieve data: {response.status_code}")
                 return None
 
+            print("Parsing the response...")
+            # Parse the HTML content with BeautifulSoup
             soup = BeautifulSoup(response.content, 'html.parser')
+
+            # List to hold all the repositories
             repo_list = []
             repos = soup.find_all('article', class_='Box-row')
 
             for repo in repos:
+                # Extracting repository details with error handling
                 repo_name = repo.h1.get_text(strip=True).replace('\n', ' ') if repo.h1 else 'No name found'
                 repo_link = 'https://github.com' + repo.h1.a['href'] if repo.h1 and repo.h1.a else 'No link found'
                 stars = repo.find('a', class_='Link--muted d-inline-block mr-3')
@@ -55,42 +69,34 @@ jobs:
                 description_tag = repo.p
                 description = description_tag.get_text(strip=True) if description_tag else 'No description'
 
+                # Append the repository data
                 repo_list.append({
                     'name': repo_name,
                     'link': repo_link,
                     'stars': stars,
-                    'description': description,
-                    'scraped_at': datetime.utcnow().isoformat()
+                    'description': description
                 })
 
             return repo_list
 
-        # Function to upload scraped data to Supabase
-        def upload_to_supabase(data):
-            supabase_url = os.getenv("SUPABASE_URL")
-            supabase_key = os.getenv("SUPABASE_KEY")
-            if not supabase_url or not supabase_key:
-                print("Supabase credentials missing.")
-                return
-            
-            try:
-                supabase: Client = create_client(supabase_url, supabase_key)
-                print("Connected to Supabase.")
+        def save_to_supabase(repos):
+            print(f"Uploading {len(repos)} repositories to Supabase...")
+            for repo in repos:
+                data = {
+                    'name': repo['name'],
+                    'link': repo['link'],
+                    'stars': repo['stars'],
+                    'description': repo['description'],
+                    'scraped_at': datetime.utcnow().isoformat()
+                }
+                response = supabase.table('github_trending_repos').insert(data).execute()
+                print(f"Inserted: {repo['name']}, Response: {response.status_code}")
 
-                response = supabase.table("github_trending_repos").insert(data).execute()
-                if response.status_code != 201:
-                    print(f"Failed to insert data: {response.status_code}")
-                else:
-                    print(f"Successfully inserted {len(data)} rows into Supabase.")
-            except Exception as e:
-                print(f"Error uploading data to Supabase: {str(e)}")
-
-        # Main function to scrape and upload data
         if __name__ == "__main__":
             trending_repos = scrape_trending_repos()
             if trending_repos:
-                print(f"Scraped {len(trending_repos)} trending repositories.")
-                upload_to_supabase(trending_repos)
+                save_to_supabase(trending_repos)
+                print(f"Successfully scraped and uploaded {len(trending_repos)} repositories.")
             else:
                 print("No repositories scraped.")
         EOF
