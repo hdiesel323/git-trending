@@ -1,4 +1,4 @@
-name: Scrape GitHub Trending Repositories
+name: Scrape GitHub Trending Repositories and Upload to Supabase
 
 on:
   push:
@@ -21,72 +21,85 @@ jobs:
 
     - name: Install Python dependencies
       run: |
-        pip install requests beautifulsoup4
+        pip install requests beautifulsoup4 supabase
 
-    - name: Scrape GitHub Trending Repositories
+    - name: Scrape GitHub Trending Repositories and Upload to Supabase
       run: |
         python - <<EOF
         import requests
         from bs4 import BeautifulSoup
         import json
         from datetime import datetime
+        from supabase import create_client, Client
+        import os
 
         # GitHub Trending URL
         URL = 'https://github.com/trending'
 
         def scrape_trending_repos():
-            # Fetch the GitHub Trending Page
-            response = requests.get(URL)
-            if response.status_code != 200:
-                print(f"Failed to retrieve data: {response.status_code}")
+            try:
+                response = requests.get(URL)
+                response.raise_for_status() # Will raise an error for bad status codes
+                soup = BeautifulSoup(response.content, 'html.parser')
+                repo_list = []
+
+                repos = soup.find_all('article', class_='Box-row')
+                for repo in repos:
+                    repo_name = repo.h1.get_text(strip=True).replace('\n', ' ') if repo.h1 else 'No name found'
+                    repo_link = 'https://github.com' + repo.h1.a['href'] if repo.h1 and repo.h1.a else 'No link found'
+                    stars = repo.find('a', class_='Link--muted d-inline-block mr-3')
+                    stars = stars.get_text(strip=True) if stars else 'No stars found'
+                    description_tag = repo.p
+                    description = description_tag.get_text(strip=True) if description_tag else 'No description'
+
+                    repo_list.append({
+                        'name': repo_name,
+                        'link': repo_link,
+                        'stars': stars,
+                        'description': description
+                    })
+                
+                print(f"Scraped {len(repo_list)} repositories from GitHub Trending.")
+                return repo_list
+            except Exception as e:
+                print(f"Error while scraping: {str(e)}")
                 return None
 
-            # Parse the HTML content with BeautifulSoup
-            soup = BeautifulSoup(response.content, 'html.parser')
-
-            # List to hold all the repositories
-            repo_list = []
-            repos = soup.find_all('article', class_='Box-row')
-
-            for repo in repos:
-                # Extracting repository details with corrected HTML tags and classes
-                repo_name_tag = repo.find('h2', class_='h3')  # Updated: Use h2 instead of h1
-                repo_name = repo_name_tag.get_text(strip=True).replace('\n', ' ') if repo_name_tag else 'No name found'
-
-                repo_link_tag = repo_name_tag.find('a') if repo_name_tag else None
-                repo_link = 'https://github.com' + repo_link_tag['href'] if repo_link_tag else 'No link found'
-
-                # Stars are in an anchor tag with class `Link--muted d-inline-block mr-3`
-                stars_tag = repo.find('a', class_='Link--muted d-inline-block mr-3')
-                stars = stars_tag.get_text(strip=True) if stars_tag else 'No stars found'
-
-                # The description is in a paragraph tag
-                description_tag = repo.p
-                description = description_tag.get_text(strip=True) if description_tag else 'No description'
-
-                # Append the repository data
-                repo_list.append({
-                    'name': repo_name,
-                    'link': repo_link,
-                    'stars': stars,
-                    'description': description
-                })
-
-            return repo_list
-
         def save_as_json(data, filename="github_trending_repos.json"):
-            # Save data as JSON with a timestamp
-            with open(filename, 'w') as f:
-                json.dump({
-                    'timestamp': datetime.utcnow().isoformat(),
-                    'repositories': data
-                }, f, indent=4)
+            try:
+                with open(filename, 'w') as f:
+                    json.dump({
+                        'timestamp': datetime.utcnow().isoformat(),
+                        'repositories': data
+                    }, f, indent=4)
+                print(f"Data saved to {filename}.")
+            except Exception as e:
+                print(f"Error saving data to JSON: {str(e)}")
+
+        def upload_to_supabase(data):
+            supabase_url = os.getenv("SUPABASE_URL")
+            supabase_key = os.getenv("SUPABASE_KEY")
+            if not supabase_url or not supabase_key:
+                print("Supabase credentials missing.")
+                return
+            
+            try:
+                supabase: Client = create_client(supabase_url, supabase_key)
+                print("Connected to Supabase.")
+                for repo in data:
+                    response = supabase.table("github_trending").insert(repo).execute()
+                    if response.status_code != 201:
+                        print(f"Failed to insert {repo['name']}: {response.status_code}")
+                    else:
+                        print(f"Inserted {repo['name']} into Supabase.")
+            except Exception as e:
+                print(f"Error uploading data to Supabase: {str(e)}")
 
         if __name__ == "__main__":
             trending_repos = scrape_trending_repos()
             if trending_repos:
                 save_as_json(trending_repos)
-                print(f"Scraped {len(trending_repos)} trending repositories.")
+                upload_to_supabase(trending_repos)
             else:
                 print("No repositories scraped.")
         EOF
