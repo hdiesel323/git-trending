@@ -1,4 +1,5 @@
 name: Scrape GitHub Trending and Upsert to Supabase
+# testing
 
 on:
   schedule:
