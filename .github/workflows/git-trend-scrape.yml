@@ -1,0 +1,97 @@
+name: Scrape GitHub Trending Repositories
+
+on:
+  push:     # Runs on every push
+  workflow_dispatch:  # Allows manual triggering from the Actions tab
+  schedule:
+    - cron: '0 9 * * *'  # Daily at 09:00 AM UTC
+
+jobs:
+  scrape:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Check out this repo
+      uses: actions/checkout@v3
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.x'
+
+    - name: Install Python dependencies
+      run: |
+        pip install requests beautifulsoup4
+
+    - name: Scrape GitHub Trending Repositories
+      run: |
+        python - <<EOF
+        import requests
+        from bs4 import BeautifulSoup
+        import json
+        from datetime import datetime
+
+        # GitHub Trending URL
+        URL = 'https://github.com/trending'
+
+        def scrape_trending_repos():
+            # Fetch the GitHub Trending Page
+            response = requests.get(URL)
+            if response.status_code != 200:
+                print(f"Failed to retrieve data: {response.status_code}")
+                return None
+
+            # Parse the HTML content with BeautifulSoup
+            soup = BeautifulSoup(response.content, 'html.parser')
+
+            # List to hold all the repositories
+            repo_list = []
+            repos = soup.find_all('article', class_='Box-row')
+
+            for repo in repos:
+                # Extracting repository details
+                repo_name = repo.h1.get_text(strip=True).replace('\n', ' ')
+                repo_link = 'https://github.com' + repo.h1.a['href']
+                stars = repo.find('a', class_='Link--muted d-inline-block mr-3').get_text(strip=True)
+                description_tag = repo.p
+                description = description_tag.get_text(strip=True) if description_tag else "No description"
+
+                # Append the repository data
+                repo_list.append({
+                    'name': repo_name,
+                    'link': repo_link,
+                    'stars': stars,
+                    'description': description
+                })
+
+            return repo_list
+
+        def save_as_json(data, filename="github_trending_repos.json"):
+            # Save data as JSON with a timestamp
+            with open(filename, 'w') as f:
+                json.dump({
+                    'timestamp': datetime.utcnow().isoformat(),
+                    'repositories': data
+                }, f, indent=4)
+
+        if __name__ == "__main__":
+            trending_repos = scrape_trending_repos()
+            if trending_repos:
+                save_as_json(trending_repos)
+                print(f"Scraped {len(trending_repos)} trending repositories.")
+            else:
+                print("No repositories scraped.")
+        EOF
+
+    - name: Check if there are changes
+      run: git diff --quiet || echo "Changes detected"
+
+    - name: Commit and push if the data has changed
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        git config user.name "GitHub Action"
+        git config user.email "actions@users.noreply.github.com"
+        git add github_trending_repos.json
+        timestamp=$(date -u)
+        git commit -m "Latest GitHub Trending Repositories: ${timestamp}" || echo "No changes to commit"
+        git push --force
