@@ -21,11 +21,9 @@ jobs:
 
     - name: Install Python dependencies
       run: |
-        # Use correct supabase library version available (0.0.2)
+        # Install necessary packages
         pip install requests beautifulsoup4 supabase-py==0.0.2
-        # Or use the new supabase client if available (comment out one)
-        # pip install requests beautifulsoup4 supabase==1.0.0
-        pip freeze  # Show installed packages for debugging
+        pip freeze  # Debugging to show installed packages
 
     - name: Scrape GitHub Trending Repositories and Upsert to Supabase
       run: |
@@ -33,7 +31,7 @@ jobs:
         import requests
         from bs4 import BeautifulSoup
         from datetime import datetime
-        from supabase import create_client, Client
+        from supabase_py import create_client, Client  # Correct import for supabase-py
         import os
 
         # Initialize Supabase client
