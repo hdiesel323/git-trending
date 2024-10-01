@@ -1,11 +1,14 @@
 name: Scrape GitHub Trending Repositories
-#test
 
 on:
   push:
   workflow_dispatch:
   schedule:
     - cron: '0 9 * * *' # Run daily at 09:00 AM UTC
+
+permissions:
+  contents: write
+  workflows: write
 
 jobs:
   scrape:
@@ -50,22 +53,17 @@ jobs:
             repos = soup.find_all('article', class_='Box-row')
 
             for repo in repos:
-                # Extracting repository details with corrected HTML tags and classes
+                # Extracting repository details
                 repo_name_tag = repo.find('h2', class_='h3')
                 repo_name = repo_name_tag.get_text(strip=True).replace('\n', ' ') if repo_name_tag else 'No name found'
-
                 repo_link_tag = repo_name_tag.find('a') if repo_name_tag else None
                 repo_link = 'https://github.com' + repo_link_tag['href'] if repo_link_tag else 'No link found'
 
-                # Stars are in an anchor tag with class `Link--muted d-inline-block mr-3`
+                # Stars
                 stars_tag = repo.find('a', class_='Link--muted d-inline-block mr-3')
                 stars = stars_tag.get_text(strip=True) if stars_tag else 'No stars found'
 
-                # Stars gained today are in a span tag with class `d-inline-block float-sm-right`
-                stars_today_tag = repo.find('span', class_='d-inline-block float-sm-right')
-                stars_today = stars_today_tag.get_text(strip=True).replace(" stars today", "") if stars_today_tag else 'No stars today'
-
-                # The description is in a paragraph tag
+                # Description
                 description_tag = repo.p
                 description = description_tag.get_text(strip=True) if description_tag else 'No description'
 
@@ -74,9 +72,7 @@ jobs:
                     'name': repo_name,
                     'link': repo_link,
                     'stars': stars,
-                    'stars_today': stars_today,  # Add stars today
-                    'description': description,
-                    'scraped_at': datetime.utcnow().isoformat()  # Add timestamp for each repository
+                    'description': description
                 })
 
             return repo_list
