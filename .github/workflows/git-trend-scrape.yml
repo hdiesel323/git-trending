@@ -1,5 +1,4 @@
 name: Scrape GitHub Trending Repositories
-#testing
 
 on:
   push:
@@ -22,7 +21,7 @@ jobs:
 
     - name: Install Python dependencies
       run: |
-        pip install requests beautifulsoup4 supabase-py
+        pip install requests beautifulsoup4 supabase-py==0.2.6  # Ensure supabase-py is installed
 
     - name: Scrape GitHub Trending Repositories and Upload to Supabase
       env:
