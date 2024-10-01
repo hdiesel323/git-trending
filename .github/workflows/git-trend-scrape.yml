@@ -1,96 +1,106 @@
-name: Scrape GitHub Trending and Upsert to Supabase
+name: Scrape GitHub Trending Repositories
 
 on:
-  schedule:
-    - cron: '0 * * * *' # Runs every hour
+  push:
   workflow_dispatch:
+  schedule:
+    - cron: '0 9 * * *' # Run daily at 09:00 AM UTC
 
 jobs:
   scrape:
     runs-on: ubuntu-latest
 
     steps:
+    - name: Check out this repo
+      uses: actions/checkout@v3
+
     - name: Set up Python
       uses: actions/setup-python@v2
       with:
         python-version: '3.x'
 
-    - name: Install dependencies
+    - name: Install Python dependencies
       run: |
-        pip install requests beautifulsoup4 supabase
-        pip freeze  # Debugging to show installed packages
-    
-    - name: Scrape GitHub Trending Repositories and Upload to Supabase
+        pip install requests beautifulsoup4
+
+    - name: Scrape GitHub Trending Repositories
       run: |
         python - <<EOF
-        from supabase import create_client, Client
         import requests
         from bs4 import BeautifulSoup
+        import json
         from datetime import datetime
-        import os
 
-        SUPABASE_URL = os.getenv('SUPABASE_URL')
-        SUPABASE_KEY = os.getenv('SUPABASE_KEY')
-        supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
+        # GitHub Trending URL
         URL = 'https://github.com/trending'
 
         def scrape_trending_repos():
-            print("Fetching GitHub trending repositories...")
+            # Fetch the GitHub Trending Page
             response = requests.get(URL)
-            print(f"GitHub response status: {response.status_code}")
             if response.status_code != 200:
                 print(f"Failed to retrieve data: {response.status_code}")
                 return None
+
+            # Parse the HTML content with BeautifulSoup
             soup = BeautifulSoup(response.content, 'html.parser')
+
+            # List to hold all the repositories
             repo_list = []
             repos = soup.find_all('article', class_='Box-row')
-            print(f"Found {len(repos)} repositories on the page.")
+
             for repo in repos:
-                repo_name_tag = repo.find('h1', class_='h3 lh-condensed')
-                repo_name = repo_name_tag.a.get_text(strip=True).replace('\n', ' ') if repo_name_tag and repo_name_tag.a else 'No name found'
-                repo_link = 'https://github.com' + repo_name_tag.a['href'] if repo_name_tag and repo_name_tag.a else None
+                # Extracting repository details with corrected HTML tags and classes
+                repo_name_tag = repo.find('h2', class_='h3')  # Updated: Use h2 instead of h1
+                repo_name = repo_name_tag.get_text(strip=True).replace('\n', ' ') if repo_name_tag else 'No name found'
+
+                repo_link_tag = repo_name_tag.find('a') if repo_name_tag else None
+                repo_link = 'https://github.com' + repo_link_tag['href'] if repo_link_tag else 'No link found'
+
+                # Stars are in an anchor tag with class `Link--muted d-inline-block mr-3`
                 stars_tag = repo.find('a', class_='Link--muted d-inline-block mr-3')
                 stars = stars_tag.get_text(strip=True) if stars_tag else 'No stars found'
+
+                # The description is in a paragraph tag
                 description_tag = repo.p
                 description = description_tag.get_text(strip=True) if description_tag else 'No description'
-                if repo_link:
-                    repo_list.append({
-                        'name': repo_name,
-                        'link': repo_link,
-                        'stars': stars,
-                        'description': description,
-                        'scraped_at': datetime.utcnow().isoformat()
-                    })
+
+                # Append the repository data
+                repo_list.append({
+                    'name': repo_name,
+                    'link': repo_link,
+                    'stars': stars,
+                    'description': description
+                })
+
             return repo_list
 
-        def save_to_supabase(repos):
-            print(f"Upserting {len(repos)} repositories to Supabase...")
-            for repo in repos:
-                data = {
-                    'name': repo['name'],
-                    'link': repo['link'],
-                    'stars': repo['stars'],
-                    'description': repo['description'],
-                    'scraped_at': datetime.utcnow().isoformat()
-                }
-                try:
-                    response = supabase.table('github_trending_repos').upsert(data, on_conflict=['link']).execute()
-                    print(f"Upserted: {repo['name']}, Response: {response}")
-                except Exception as e:
-                    print(f"Error upserting {repo['name']}: {e}")
+        def save_as_json(data, filename="github_trending_repos.json"):
+            # Save data as JSON with a timestamp
+            with open(filename, 'w') as f:
+                json.dump({
+                    'timestamp': datetime.utcnow().isoformat(),
+                    'repositories': data
+                }, f, indent=4)
 
         if __name__ == "__main__":
             trending_repos = scrape_trending_repos()
             if trending_repos:
-                save_to_supabase(trending_repos)
-                print(f"Successfully scraped and uploaded {len(trending_repos)} repositories.")
+                save_as_json(trending_repos)
+                print(f"Scraped {len(trending_repos)} trending repositories.")
             else:
                 print("No repositories scraped.")
         EOF
-      env:
-        SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
-        SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
 
-    - name: Post job cleanup
+    - name: Check if there are changes
+      run: git diff --quiet || echo "Changes detected"
+
+    - name: Commit and push if the data has changed
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
-        echo "Post job cleanup."
+        git config user.name "GitHub Action"
+        git config user.email "actions@users.noreply.github.com"
+        git add github_trending_repos.json
+        timestamp=$(date -u)
+        git commit -m "Latest GitHub Trending Repositories: ${timestamp}" || echo "No changes to commit"
+        git push --force
