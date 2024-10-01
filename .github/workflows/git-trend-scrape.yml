@@ -1,5 +1,4 @@
 name: Scrape GitHub Trending and Upsert to Supabase
-# testing
 
 on:
   schedule:
@@ -50,10 +49,11 @@ jobs:
                 return None
 
             print("Parsing the response...")
-            
-            # Print the raw HTML for debugging
-            print(response.text[:1000])  # Only print the first 1000 characters to avoid large output
-            
+
+            # Print the full raw HTML content for debugging purposes
+            print("Raw HTML content:")
+            print(response.text[:5000])  # Print the first 5000 characters of HTML to inspect structure
+
             soup = BeautifulSoup(response.content, 'html.parser')
             repo_list = []
             repos = soup.find_all('article', class_='Box-row')
