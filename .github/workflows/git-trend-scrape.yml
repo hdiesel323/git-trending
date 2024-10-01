@@ -21,7 +21,9 @@ jobs:
 
     - name: Install Python dependencies
       run: |
-        pip install requests beautifulsoup4 supabase-py  # Install latest supabase-py version
+        pip install requests beautifulsoup4 supabase-py  # Install latest version of supabase-py
+        # Adding debugging logs for Python package versions
+        pip freeze  # Print out installed packages to debug installation issues
 
     - name: Scrape GitHub Trending Repositories and Upload to Supabase
       env:
@@ -90,7 +92,7 @@ jobs:
                     'scraped_at': datetime.utcnow().isoformat()
                 }
                 response = supabase.table('github_trending_repos').insert(data).execute()
-                print(f"Inserted: {repo['name']}, Response: {response.status_code}")
+                print(f"Inserted: {repo['name']}, Response: {response}")
 
         if __name__ == "__main__":
             trending_repos = scrape_trending_repos()
