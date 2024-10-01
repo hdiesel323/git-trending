@@ -21,17 +21,15 @@ jobs:
 
     - name: Install Python dependencies
       run: |
-        # Install necessary packages
-        pip install requests beautifulsoup4 supabase-py==0.0.2
-        pip freeze  # Debugging to show installed packages
+        pip install requests beautifulsoup4 supabase-py
 
     - name: Scrape GitHub Trending Repositories and Upsert to Supabase
       run: |
         python - <<EOF
+        from supabase import create_client, Client
         import requests
         from bs4 import BeautifulSoup
         from datetime import datetime
-        from supabase_py import create_client, Client  # Correct import for supabase-py
         import os
 
         # Initialize Supabase client
@@ -44,38 +42,31 @@ jobs:
 
         def scrape_trending_repos():
             print("Fetching GitHub trending repositories...")
-            # Fetch the GitHub Trending Page
             response = requests.get(URL)
             if response.status_code != 200:
                 print(f"Failed to retrieve data: {response.status_code}")
                 return None
 
             print("Parsing the response...")
-            # Parse the HTML content with BeautifulSoup
             soup = BeautifulSoup(response.content, 'html.parser')
-
-            # List to hold all the repositories
             repo_list = []
             repos = soup.find_all('article', class_='Box-row')
 
             for repo in repos:
-                # Extracting repository details with error handling
                 repo_name_tag = repo.find('h1', class_='h3 lh-condensed')
                 repo_name = repo_name_tag.a.get_text(strip=True).replace('\n', ' ') if repo_name_tag and repo_name_tag.a else 'No name found'
                 repo_link = 'https://github.com' + repo_name_tag.a['href'] if repo_name_tag and repo_name_tag.a else 'No link found'
-
                 stars_tag = repo.find('a', class_='Link--muted d-inline-block mr-3')
                 stars = stars_tag.get_text(strip=True) if stars_tag else 'No stars found'
-
                 description_tag = repo.p
                 description = description_tag.get_text(strip=True) if description_tag else 'No description'
 
-                # Append the repository data
                 repo_list.append({
                     'name': repo_name,
                     'link': repo_link,
                     'stars': stars,
-                    'description': description
+                    'description': description,
+                    'scraped_at': datetime.utcnow().isoformat()
                 })
 
             return repo_list
@@ -90,8 +81,7 @@ jobs:
                     'description': repo['description'],
                     'scraped_at': datetime.utcnow().isoformat()
                 }
-                # Upsert data based on the repository link (unique field)
-                response = supabase.table('github_trending_repos').upsert(data, on_conflict=['link']).execute()
+                response = supabase.table('github_trending_repos').insert(data, upsert=True).execute()
                 print(f"Upserted: {repo['name']}, Response: {response}")
 
         if __name__ == "__main__":
@@ -105,17 +95,3 @@ jobs:
       env:
         SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
         SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
-
-    - name: Check for changes in the JSON file
-      run: git diff --quiet || echo "Changes detected"
-
-    - name: Commit and push if the data has changed
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      run: |
-        git config user.name "GitHub Action"
-        git config user.email "actions@users.noreply.github.com"
-        git add github_trending_repos.json
-        timestamp=$(date -u)
-        git commit -m "Latest GitHub Trending Repositories: ${timestamp}" || echo "No changes to commit"
-        git push --force
