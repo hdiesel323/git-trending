@@ -45,7 +45,7 @@ jobs:
         # Upload file to Supabase Storage
         with open(file_path, "rb") as file:
             file_data = file.read()
-            response = supabase.storage.from_('github_trending_json').upload(f"trending/{file_path}", file_data, upsert=True)
+            response = supabase.storage.from_('github_trending_json').upload(f"trending/{file_path}", file_data)
 
         print(f"Uploaded file: {file_path}, Response: {response}")
         EOF
