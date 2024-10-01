@@ -49,11 +49,18 @@ jobs:
             repos = soup.find_all('article', class_='Box-row')
 
             for repo in repos:
-                # Extracting repository details with error handling
-                repo_name = repo.h1.get_text(strip=True).replace('\n', ' ') if repo.h1 else 'No name found'
-                repo_link = 'https://github.com' + repo.h1.a['href'] if repo.h1 and repo.h1.a else 'No link found'
-                stars = repo.find('a', class_='Link--muted d-inline-block mr-3')
-                stars = stars.get_text(strip=True) if stars else 'No stars found'
+                # Extracting repository details with corrected HTML tags and classes
+                repo_name_tag = repo.find('h2', class_='h3')  # Updated: Use h2 instead of h1
+                repo_name = repo_name_tag.get_text(strip=True).replace('\n', ' ') if repo_name_tag else 'No name found'
+
+                repo_link_tag = repo_name_tag.find('a') if repo_name_tag else None
+                repo_link = 'https://github.com' + repo_link_tag['href'] if repo_link_tag else 'No link found'
+
+                # Stars are in an anchor tag with class `Link--muted d-inline-block mr-3`
+                stars_tag = repo.find('a', class_='Link--muted d-inline-block mr-3')
+                stars = stars_tag.get_text(strip=True) if stars_tag else 'No stars found'
+
+                # The description is in a paragraph tag
                 description_tag = repo.p
                 description = description_tag.get_text(strip=True) if description_tag else 'No description'
 
