@@ -1,30 +1,26 @@
-name: Scrape GitHub Trending Repositories
+name: Scrape GitHub Trending and Upsert to Supabase
 
 on:
-  push:
-  workflow_dispatch:
   schedule:
-    - cron: '0 9 * * *' # Run daily at 09:00 AM UTC
+    - cron: '0 * * * *' # Runs every hour
+  workflow_dispatch:
 
 jobs:
   scrape:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Check out this repo
-      uses: actions/checkout@v3
-
     - name: Set up Python
       uses: actions/setup-python@v2
       with:
         python-version: '3.x'
 
-    - name: Install Python dependencies
+    - name: Install dependencies
       run: |
         pip install requests beautifulsoup4 supabase
         pip freeze  # Debugging to show installed packages
-
-    - name: Scrape GitHub Trending Repositories and Upsert to Supabase
+    
+    - name: Scrape GitHub Trending Repositories and Upload to Supabase
       run: |
         python - <<EOF
         from supabase import create_client, Client
@@ -44,15 +40,25 @@ jobs:
         def scrape_trending_repos():
             print("Fetching GitHub trending repositories...")
             response = requests.get(URL)
+            
+            # Print the status code
+            print(f"GitHub response status: {response.status_code}")
+            
             if response.status_code != 200:
                 print(f"Failed to retrieve data: {response.status_code}")
                 return None
 
             print("Parsing the response...")
+            
+            # Print the raw HTML for debugging
+            print(response.text[:1000])  # Only print the first 1000 characters to avoid large output
+            
             soup = BeautifulSoup(response.content, 'html.parser')
             repo_list = []
             repos = soup.find_all('article', class_='Box-row')
 
+            print(f"Found {len(repos)} repositories on the page.")  # Print how many repositories were found
+            
             for repo in repos:
                 repo_name_tag = repo.find('h1', class_='h3 lh-condensed')
                 repo_name = repo_name_tag.a.get_text(strip=True).replace('\n', ' ') if repo_name_tag and repo_name_tag.a else 'No name found'
@@ -102,3 +108,7 @@ jobs:
       env:
         SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
         SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
+
+    - name: Post job cleanup
+      run: |
+        echo "Post job cleanup."
