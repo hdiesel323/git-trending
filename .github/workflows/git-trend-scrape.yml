@@ -29,37 +29,22 @@ jobs:
         from datetime import datetime
         import os
 
-        # Initialize Supabase client
         SUPABASE_URL = os.getenv('SUPABASE_URL')
         SUPABASE_KEY = os.getenv('SUPABASE_KEY')
         supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
-
-        # GitHub Trending URL
         URL = 'https://github.com/trending'
 
         def scrape_trending_repos():
             print("Fetching GitHub trending repositories...")
             response = requests.get(URL)
-            
-            # Print the status code
             print(f"GitHub response status: {response.status_code}")
-            
             if response.status_code != 200:
                 print(f"Failed to retrieve data: {response.status_code}")
                 return None
-
-            print("Parsing the response...")
-
-            # Print the full raw HTML content for debugging purposes
-            print("Raw HTML content:")
-            print(response.text[:5000])  # Print the first 5000 characters of HTML to inspect structure
-
             soup = BeautifulSoup(response.content, 'html.parser')
             repo_list = []
             repos = soup.find_all('article', class_='Box-row')
-
-            print(f"Found {len(repos)} repositories on the page.")  # Print how many repositories were found
-            
+            print(f"Found {len(repos)} repositories on the page.")
             for repo in repos:
                 repo_name_tag = repo.find('h1', class_='h3 lh-condensed')
                 repo_name = repo_name_tag.a.get_text(strip=True).replace('\n', ' ') if repo_name_tag and repo_name_tag.a else 'No name found'
@@ -68,8 +53,6 @@ jobs:
                 stars = stars_tag.get_text(strip=True) if stars_tag else 'No stars found'
                 description_tag = repo.p
                 description = description_tag.get_text(strip=True) if description_tag else 'No description'
-
-                # Only append if we have a valid link
                 if repo_link:
                     repo_list.append({
                         'name': repo_name,
@@ -78,7 +61,6 @@ jobs:
                         'description': description,
                         'scraped_at': datetime.utcnow().isoformat()
                     })
-
             return repo_list
 
         def save_to_supabase(repos):
@@ -92,8 +74,7 @@ jobs:
                     'scraped_at': datetime.utcnow().isoformat()
                 }
                 try:
-                    # Upsert data based on the repository link (unique field)
-                    response = supabase.table('github_trending_repos').insert(data, upsert=True).execute()
+                    response = supabase.table('github_trending_repos').upsert(data, on_conflict=['link']).execute()
                     print(f"Upserted: {repo['name']}, Response: {response}")
                 except Exception as e:
                     print(f"Error upserting {repo['name']}: {e}")
