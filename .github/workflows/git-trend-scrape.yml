@@ -21,9 +21,9 @@ jobs:
 
     - name: Install Python dependencies
       run: |
-        pip install requests beautifulsoup4 supabase-py  # Install latest version of supabase-py
-        # Adding debugging logs for Python package versions
-        pip freeze  # Print out installed packages to debug installation issues
+        pip install requests beautifulsoup4 supabase-python  # Correct package for supabase
+        # Debugging logs
+        pip freeze  # Verify installed packages
 
     - name: Scrape GitHub Trending Repositories and Upload to Supabase
       env:
