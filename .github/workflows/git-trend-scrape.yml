@@ -21,7 +21,7 @@ jobs:
 
     - name: Install Python dependencies
       run: |
-        pip install requests beautifulsoup4 supabase-py==0.2.6  # Ensure supabase-py is installed
+        pip install requests beautifulsoup4 supabase-py  # Install latest supabase-py version
 
     - name: Scrape GitHub Trending Repositories and Upload to Supabase
       env:
