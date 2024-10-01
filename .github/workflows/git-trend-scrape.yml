@@ -21,7 +21,7 @@ jobs:
 
     - name: Install Python dependencies
       run: |
-        pip install requests beautifulsoup4 supabase-python  # Correct package for supabase
+        pip install requests beautifulsoup4 supabase  # Correct package for supabase
         # Debugging logs
         pip freeze  # Verify installed packages
 
