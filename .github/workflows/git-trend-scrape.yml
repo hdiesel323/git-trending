@@ -21,7 +21,7 @@ jobs:
 
     - name: Install Python dependencies
       run: |
-        pip install requests beautifulsoup4 supabase  # Install the correct supabase package
+        pip install requests beautifulsoup4 supabase
         pip freeze  # Debugging to show installed packages
 
     - name: Scrape GitHub Trending Repositories and Upsert to Supabase
@@ -56,19 +56,21 @@ jobs:
             for repo in repos:
                 repo_name_tag = repo.find('h1', class_='h3 lh-condensed')
                 repo_name = repo_name_tag.a.get_text(strip=True).replace('\n', ' ') if repo_name_tag and repo_name_tag.a else 'No name found'
-                repo_link = 'https://github.com' + repo_name_tag.a['href'] if repo_name_tag and repo_name_tag.a else 'No link found'
+                repo_link = 'https://github.com' + repo_name_tag.a['href'] if repo_name_tag and repo_name_tag.a else None
                 stars_tag = repo.find('a', class_='Link--muted d-inline-block mr-3')
                 stars = stars_tag.get_text(strip=True) if stars_tag else 'No stars found'
                 description_tag = repo.p
                 description = description_tag.get_text(strip=True) if description_tag else 'No description'
 
-                repo_list.append({
-                    'name': repo_name,
-                    'link': repo_link,
-                    'stars': stars,
-                    'description': description,
-                    'scraped_at': datetime.utcnow().isoformat()
-                })
+                # Only append if we have a valid link
+                if repo_link:
+                    repo_list.append({
+                        'name': repo_name,
+                        'link': repo_link,
+                        'stars': stars,
+                        'description': description,
+                        'scraped_at': datetime.utcnow().isoformat()
+                    })
 
             return repo_list
 
@@ -82,8 +84,12 @@ jobs:
                     'description': repo['description'],
                     'scraped_at': datetime.utcnow().isoformat()
                 }
-                response = supabase.table('github_trending_repos').insert(data, upsert=True).execute()
-                print(f"Upserted: {repo['name']}, Response: {response}")
+                try:
+                    # Upsert data based on the repository link (unique field)
+                    response = supabase.table('github_trending_repos').insert(data, upsert=True).execute()
+                    print(f"Upserted: {repo['name']}, Response: {response}")
+                except Exception as e:
+                    print(f"Error upserting {repo['name']}: {e}")
 
         if __name__ == "__main__":
             trending_repos = scrape_trending_repos()
