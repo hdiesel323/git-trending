@@ -1,5 +1,5 @@
 {
-    "timestamp": "2024-10-01T06:58:24.368919",
+    "timestamp": "2024-10-01T06:59:13.369665",
     "repositories": [
         {
             "name": "unclecode /crawl4ai",
@@ -7,7 +7,7 @@
             "stars": "No stars found",
             "stars_today": "2,345",
             "description": "\ud83d\udd25\ud83d\udd77\ufe0f Crawl4AI: Open-source LLM Friendly Web Crawler & Scrapper",
-            "scraped_at": "2024-10-01T06:58:24.363744"
+            "scraped_at": "2024-10-01T06:59:13.364409"
         },
         {
             "name": "exo-explore /exo",
@@ -15,7 +15,7 @@
             "stars": "No stars found",
             "stars_today": "347",
             "description": "Run your own AI cluster at home with everyday devices \ud83d\udcf1\ud83d\udcbb \ud83d\udda5\ufe0f\u231a",
-            "scraped_at": "2024-10-01T06:58:24.364209"
+            "scraped_at": "2024-10-01T06:59:13.364898"
         },
         {
             "name": "mediar-ai /screenpipe",
@@ -23,7 +23,7 @@
             "stars": "No stars found",
             "stars_today": "553",
             "description": "24/7 local AI screen & mic recording. Build AI apps that have the full context. Works with Ollama. Alternative to Rewind.ai. Open. Secure. You own your data. Rust.",
-            "scraped_at": "2024-10-01T06:58:24.364602"
+            "scraped_at": "2024-10-01T06:59:13.365208"
         },
         {
             "name": "tw93 /Pake",
@@ -31,7 +31,7 @@
             "stars": "No stars found",
             "stars_today": "358",
             "description": "\ud83e\udd31\ud83c\udffb Turn any webpage into a desktop app with Rust. \ud83e\udd31\ud83c\udffb \u5229\u7528 Rust \u8f7b\u677e\u6784\u5efa\u8f7b\u91cf\u7ea7\u591a\u7aef\u684c\u9762\u5e94\u7528",
-            "scraped_at": "2024-10-01T06:58:24.364910"
+            "scraped_at": "2024-10-01T06:59:13.365552"
         },
         {
             "name": "maybe-finance /maybe",
@@ -39,7 +39,7 @@
             "stars": "No stars found",
             "stars_today": "292",
             "description": "The OS for your personal finances",
-            "scraped_at": "2024-10-01T06:58:24.365159"
+            "scraped_at": "2024-10-01T06:59:13.365813"
         },
         {
             "name": "EbookFoundation /free-programming-books",
@@ -47,7 +47,7 @@
             "stars": "No stars found",
             "stars_today": "121",
             "description": "\ud83d\udcda Freely available programming books",
-            "scraped_at": "2024-10-01T06:58:24.365463"
+            "scraped_at": "2024-10-01T06:59:13.366100"
         },
         {
             "name": "kamranahmedse /developer-roadmap",
@@ -55,7 +55,7 @@
             "stars": "No stars found",
             "stars_today": "167",
             "description": "Interactive roadmaps, guides and other educational content to help developers grow in their careers.",
-            "scraped_at": "2024-10-01T06:58:24.365756"
+            "scraped_at": "2024-10-01T06:59:13.366398"
         },
         {
             "name": "paul-gauthier /aider",
@@ -63,7 +63,7 @@
             "stars": "No stars found",
             "stars_today": "106",
             "description": "aider is AI pair programming in your terminal",
-            "scraped_at": "2024-10-01T06:58:24.366004"
+            "scraped_at": "2024-10-01T06:59:13.366668"
         },
         {
             "name": "ente-io /ente",
@@ -71,7 +71,7 @@
             "stars": "No stars found",
             "stars_today": "52",
             "description": "Fully open source, End to End Encrypted alternative to Google Photos and Apple Photos",
-            "scraped_at": "2024-10-01T06:58:24.366306"
+            "scraped_at": "2024-10-01T06:59:13.366978"
         },
         {
             "name": "Ryujinx /Ryujinx",
@@ -79,7 +79,7 @@
             "stars": "No stars found",
             "stars_today": "25",
             "description": "Experimental Nintendo Switch Emulator written in C#",
-            "scraped_at": "2024-10-01T06:58:24.366574"
+            "scraped_at": "2024-10-01T06:59:13.367235"
         },
         {
             "name": "microsoft /RD-Agent",
@@ -87,7 +87,7 @@
             "stars": "No stars found",
             "stars_today": "20",
             "description": "Research and development (R&D) is crucial for the enhancement of industrial productivity, especially in the AI era, where the core aspects of R&D are mainly focused on data and models. We are committed to automate these high-value generic R&D processes through our open source R&D automation tool RD-Agent, which let AI drive data-driven AI.",
-            "scraped_at": "2024-10-01T06:58:24.366821"
+            "scraped_at": "2024-10-01T06:59:13.367497"
         },
         {
             "name": "krishnadey30 /LeetCode-Questions-CompanyWise",
@@ -95,7 +95,7 @@
             "stars": "No stars found",
             "stars_today": "73",
             "description": "Contains Company Wise Questions sorted based on Frequency and all time",
-            "scraped_at": "2024-10-01T06:58:24.367053"
+            "scraped_at": "2024-10-01T06:59:13.367739"
         },
         {
             "name": "kestra-io /kestra",
@@ -103,7 +103,7 @@
             "stars": "No stars found",
             "stars_today": "521",
             "description": "Orchestration and automation platform to execute millions of scheduled and event-driven workflows declaratively in code and from the UI",
-            "scraped_at": "2024-10-01T06:58:24.367300"
+            "scraped_at": "2024-10-01T06:59:13.367994"
         },
         {
             "name": "Cinnamon /kotaemon",
@@ -111,7 +111,7 @@
             "stars": "No stars found",
             "stars_today": "224",
             "description": "An open-source RAG-based tool for chatting with your documents.",
-            "scraped_at": "2024-10-01T06:58:24.367568"
+            "scraped_at": "2024-10-01T06:59:13.368246"
         },
         {
             "name": "immich-app /immich",
@@ -119,7 +119,7 @@
             "stars": "No stars found",
             "stars_today": "364",
             "description": "High performance self-hosted photo and video management solution.",
-            "scraped_at": "2024-10-01T06:58:24.367817"
+            "scraped_at": "2024-10-01T06:59:13.368510"
         },
         {
             "name": "RVC-Boss /GPT-SoVITS",
@@ -127,7 +127,7 @@
             "stars": "No stars found",
             "stars_today": "47",
             "description": "1 min voice data can also be used to train a good TTS model! (few shot voice cloning)",
-            "scraped_at": "2024-10-01T06:58:24.368061"
+            "scraped_at": "2024-10-01T06:59:13.368760"
         },
         {
             "name": "AUTOMATIC1111 /stable-diffusion-webui",
@@ -135,7 +135,7 @@
             "stars": "No stars found",
             "stars_today": "57",
             "description": "Stable Diffusion web UI",
-            "scraped_at": "2024-10-01T06:58:24.368307"
+            "scraped_at": "2024-10-01T06:59:13.369009"
         },
         {
             "name": "Hannibal046 /Awesome-LLM",
@@ -143,7 +143,7 @@
             "stars": "No stars found",
             "stars_today": "101",
             "description": "Awesome-LLM: a curated list of Large Language Model",
-            "scraped_at": "2024-10-01T06:58:24.368545"
+            "scraped_at": "2024-10-01T06:59:13.369235"
         }
     ]
 }
