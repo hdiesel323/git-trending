@@ -1,14 +1,15 @@
 name: Scrape GitHub Trending Repositories
 
 on:
-  push:     # Runs on every push
-  workflow_dispatch:  # Allows manual triggering from the Actions tab
+  push:
+  workflow_dispatch:
   schedule:
-    - cron: '0 9 * * *'  # Daily at 09:00 AM UTC
+    - cron: '0 9 * * *' # Run daily at 09:00 AM UTC
 
 jobs:
   scrape:
     runs-on: ubuntu-latest
+
     steps:
     - name: Check out this repo
       uses: actions/checkout@v3
@@ -48,12 +49,13 @@ jobs:
             repos = soup.find_all('article', class_='Box-row')
 
             for repo in repos:
-                # Extracting repository details
-                repo_name = repo.h1.get_text(strip=True).replace('\n', ' ')
-                repo_link = 'https://github.com' + repo.h1.a['href']
-                stars = repo.find('a', class_='Link--muted d-inline-block mr-3').get_text(strip=True)
+                # Extracting repository details with error handling
+                repo_name = repo.h1.get_text(strip=True).replace('\n', ' ') if repo.h1 else 'No name found'
+                repo_link = 'https://github.com' + repo.h1.a['href'] if repo.h1 and repo.h1.a else 'No link found'
+                stars = repo.find('a', class_='Link--muted d-inline-block mr-3')
+                stars = stars.get_text(strip=True) if stars else 'No stars found'
                 description_tag = repo.p
-                description = description_tag.get_text(strip=True) if description_tag else "No description"
+                description = description_tag.get_text(strip=True) if description_tag else 'No description'
 
                 # Append the repository data
                 repo_list.append({
