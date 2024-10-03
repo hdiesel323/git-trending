@@ -1,15 +1,15 @@
-name: Upsert Repos to Supabase Database
+name: Upload JSON to Supabase Storage
 
 on:
   workflow_dispatch:
   schedule:
-    - cron: '0 10 * * *'  # Run daily at 10:00 AM UTC
+    - cron: '0 10 * * *'  # Upload daily at 10:00 AM UTC
   push:
     branches:
       - main
 
 jobs:
-  upsert-to-supabase:
+  upload-to-supabase:
     runs-on: ubuntu-latest
 
     steps:
@@ -22,50 +22,33 @@ jobs:
         python-version: '3.x'
 
     - name: Install Supabase Python SDK
-      run: pip install supabase
+      run: |
+        pip install supabase
 
-    - name: Upsert Data to Supabase Database
+    - name: Upload JSON to Supabase Storage
       env:
         SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
         SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
       run: |
         python - <<EOF
         import os
-        import json
         from supabase import create_client
 
+        # Initialize Supabase client
         SUPABASE_URL = os.getenv('SUPABASE_URL')
         SUPABASE_KEY = os.getenv('SUPABASE_KEY')
         supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
 
-        # Read today's JSON file
-        timestamp = datetime.now().strftime('%Y-%m-%d')
-        file_path = f"github_trending_repos_{timestamp}.json"
-        if not os.path.exists(file_path):
-            print(f"File {file_path} does not exist.")
-            exit(1)
-
-        with open(file_path, 'r') as f:
-            repos_data = json.load(f)
-
-        # Upsert data into repositories table
-        for repo in repos_data:
-            supabase.table('repositories').upsert({
-                'name': repo['name'],
-                'link': repo['link'],
-                'description': repo['description'],
-                'stars': repo['stars'],
-                'stars_today': repo['stars_today'],
-                'scraped_at': repo['scraped_at']
-            }).execute()
-
-            # Insert historical data for tracking trends
-            supabase.table('daily_snapshots').insert({
-                'repository_name': repo['name'],
-                'stars': repo['stars'],
-                'stars_today': repo['stars_today'],
-                'scraped_at': repo['scraped_at']
-            }).execute()
-
-        print("Data upserted successfully.")
+        # Find the latest JSON file
+        latest_file = sorted([f for f in os.listdir('.') if f.startswith('github_trending_repos_') and f.endswith('.json')])[-1]
+        
+        # Upload the latest JSON file to Supabase Storage
+        with open(latest_file, "rb") as file:
+            file_data = file.read()
+            response = supabase.storage.from_('github_trending_json').upload(f"trending/{latest_file}", file_data)
+        
+        if 'error' not in response:
+            print(f"Successfully uploaded {latest_file} to Supabase Storage.")
+        else:
+            print(f"Failed to upload {latest_file}. Error: {response['error']}")
         EOF
