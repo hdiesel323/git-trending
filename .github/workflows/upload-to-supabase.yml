@@ -3,7 +3,7 @@ name: Upload JSON to Supabase Storage
 on:
   workflow_dispatch:
   schedule:
-    - cron: '0 10 * * *'  # Run daily at 10:00 AM UTC
+    - cron: '0 10 * * *'  # Example: Run daily at 10:00 AM UTC
   push:
     branches:
       - main
