@@ -1,10 +1,13 @@
-name: Scrape GitHub Trending Repositories
+name: Scrape GitHub Trending and Upload to Supabase
 
 on:
   push:
   workflow_dispatch:
   schedule:
-    - cron: '0 9 * * *' # Run daily at 09:00 AM UTC
+    - cron: '0 9 * * *'  # Run daily at 09:00 AM UTC
+
+permissions:
+  contents: write
 
 jobs:
   scrape:
@@ -31,35 +34,35 @@ jobs:
         import json
         from datetime import datetime
         import os
-
+        
         # GitHub Trending URL
         URL = 'https://github.com/trending'
-
+        
         def scrape_trending_repos():
             response = requests.get(URL)
             if response.status_code != 200:
                 print(f"Failed to retrieve data: {response.status_code}")
                 return None
-
+        
             soup = BeautifulSoup(response.content, 'html.parser')
             repo_list = []
             repos = soup.find_all('article', class_='Box-row')
-
+        
             for repo in repos:
                 repo_name_tag = repo.find('h2', class_='h3')
                 repo_name = repo_name_tag.get_text(strip=True).replace('\n', ' ') if repo_name_tag else 'No name found'
                 repo_link_tag = repo_name_tag.find('a') if repo_name_tag else None
                 repo_link = 'https://github.com' + repo_link_tag['href'] if repo_link_tag else 'No link found'
-
+        
                 stars_tag = repo.find('a', class_='Link--muted d-inline-block mr-3')
                 stars = stars_tag.get_text(strip=True) if stars_tag else 'No stars found'
-
+        
                 stars_today_tag = repo.find('span', class_='d-inline-block float-sm-right')
                 stars_today = stars_today_tag.get_text(strip=True) if stars_today_tag else 'No stars today'
-
+        
                 description_tag = repo.p
                 description = description_tag.get_text(strip=True) if description_tag else 'No description'
-
+        
                 repo_list.append({
                     'name': repo_name,
                     'link': repo_link,
@@ -68,9 +71,9 @@ jobs:
                     'description': description,
                     'scraped_at': datetime.utcnow().isoformat()
                 })
-
+        
             return repo_list
-
+        
         def update_json_file(data, filename="github_trending_repos.json"):
             # Load existing data if the file exists
             if os.path.exists(filename):
@@ -78,7 +81,7 @@ jobs:
                     existing_data = json.load(f)
             else:
                 existing_data = {'repositories': {}}
-
+        
             for repo in data:
                 name = repo['name']
                 if name not in existing_data['repositories']:
@@ -88,18 +91,18 @@ jobs:
                         'description': repo['description'],
                         'historical_data': []
                     }
-
+        
                 # Update the repository's historical data
                 existing_data['repositories'][name]['historical_data'].append({
                     'date': repo['scraped_at'],
                     'stars': repo['stars'],
                     'stars_today': repo['stars_today']
                 })
-
+        
             # Save the updated data back to the JSON file
             with open(filename, 'w') as f:
                 json.dump(existing_data, f, indent=4)
-
+        
         if __name__ == "__main__":
             trending_repos = scrape_trending_repos()
             if trending_repos:
@@ -122,3 +125,44 @@ jobs:
         timestamp=$(date -u)
         git commit -m "Latest GitHub Trending Repositories: ${timestamp}" || echo "No changes to commit"
         git push --force
+
+  upload-to-supabase:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Check out this repo
+      uses: actions/checkout@v3
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.x'
+
+    - name: Install Supabase Python SDK
+      run: |
+        pip install supabase requests
+
+    - name: Upload JSON to Supabase Storage
+      env:
+        SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+        SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
+      run: |
+        python - <<EOF
+        from supabase import create_client
+        import os
+
+        # Initialize Supabase client
+        SUPABASE_URL = os.getenv('SUPABASE_URL')
+        SUPABASE_KEY = os.getenv('SUPABASE_KEY')
+        supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
+
+        # File to upload
+        file_path = "github_trending_repos.json"
+
+        # Upload file to Supabase Storage
+        with open(file_path, "rb") as file:
+            file_data = file.read()
+            response = supabase.storage.from_('github_trending_json').upload(f"trending/{file_path}", file_data)
+
+        print(f"Uploaded file: {file_path}, Response: {response}")
+        EOF
