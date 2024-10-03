@@ -1,17 +1,19 @@
-name: Scrape GitHub Trending Repositories and Update JSON
+name: Scrape GitHub Trending Repositories
 
 on:
-  push:
   workflow_dispatch:
   schedule:
     - cron: '0 9 * * *'  # Run daily at 09:00 AM UTC
+  push:
+    branches:
+      - main
 
 jobs:
-  scrape-and-update:
+  scrape-and-store:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Check out this repo
+    - name: Check out the repo
       uses: actions/checkout@v3
 
     - name: Set up Python
@@ -20,10 +22,9 @@ jobs:
         python-version: '3.x'
 
     - name: Install dependencies
-      run: |
-        pip install requests beautifulsoup4
+      run: pip install requests beautifulsoup4 supabase
 
-    - name: Scrape GitHub Trending Repositories and Update JSON
+    - name: Scrape GitHub Trending and Save JSON
       run: |
         python - <<EOF
         import requests
@@ -32,104 +33,56 @@ jobs:
         from datetime import datetime
         import os
 
-        # GitHub Trending URL
+        # Scraping GitHub Trending
         URL = 'https://github.com/trending'
+        response = requests.get(URL)
+        soup = BeautifulSoup(response.content, 'html.parser')
 
-        def scrape_trending_repos():
-            response = requests.get(URL)
-            if response.status_code != 200:
-                print(f"Failed to retrieve data: {response.status_code}")
-                return None
+        repo_list = []
+        repos = soup.find_all('article', class_='Box-row')
 
-            soup = BeautifulSoup(response.content, 'html.parser')
-            repo_list = []
-            repos = soup.find_all('article', class_='Box-row')
+        for repo in repos:
+            repo_name_tag = repo.find('h2', class_='h3')
+            repo_name = repo_name_tag.get_text(strip=True).replace('\n', ' ') if repo_name_tag else 'No name found'
+            repo_link_tag = repo_name_tag.find('a') if repo_name_tag else None
+            repo_link = 'https://github.com' + repo_link_tag['href'] if repo_link_tag else 'No link found'
 
-            for repo in repos:
-                repo_name_tag = repo.find('h2', class_='h3')
-                repo_name = repo_name_tag.get_text(strip=True).replace('\n', ' ') if repo_name_tag else 'No name found'
-                repo_link_tag = repo_name_tag.find('a') if repo_name_tag else None
-                repo_link = 'https://github.com' + repo_link_tag['href'] if repo_link_tag else 'No link found'
+            stars_tag = repo.find('a', class_='Link--muted d-inline-block mr-3')
+            stars = stars_tag.get_text(strip=True).replace(',', '') if stars_tag else 'No stars found'
 
-                stars_tag = repo.find('a', class_='Link--muted d-inline-block mr-3')
-                stars = stars_tag.get_text(strip=True) if stars_tag else 'No stars found'
+            stars_today_tag = repo.find('span', class_='d-inline-block float-sm-right')
+            stars_today = stars_today_tag.get_text(strip=True).replace(',', '') if stars_today_tag else 'No stars today'
 
-                stars_today_tag = repo.find('span', class_='d-inline-block float-sm-right')
-                stars_today = stars_today_tag.get_text(strip=True) if stars_today_tag else 'No stars today'
+            description_tag = repo.p
+            description = description_tag.get_text(strip=True) if description_tag else 'No description'
 
-                description_tag = repo.p
-                description = description_tag.get_text(strip=True) if description_tag else 'No description'
+            repo_list.append({
+                'name': repo_name,
+                'link': repo_link,
+                'stars': int(stars.replace('k', '000')) if stars != 'No stars found' else 0,
+                'stars_today': int(stars_today.replace('k', '000')) if stars_today != 'No stars today' else 0,
+                'description': description,
+                'scraped_at': datetime.now().isoformat()
+            })
 
-                repo_list.append({
-                    'name': repo_name,
-                    'link': repo_link,
-                    'stars': stars,
-                    'stars_today': stars_today,
-                    'description': description,
-                    'scraped_at': datetime.now().isoformat()
-                })
+        # Save JSON to local file
+        timestamp = datetime.now().strftime('%Y-%m-%d')
+        file_name = f"github_trending_repos_{timestamp}.json"
+        with open(file_name, 'w') as f:
+            json.dump(repo_list, f, indent=4)
 
-            return repo_list
+        # Upload to Supabase Storage
+        from supabase import create_client
+        SUPABASE_URL = os.getenv('SUPABASE_URL')
+        SUPABASE_KEY = os.getenv('SUPABASE_KEY')
+        supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
 
-        def validate_existing_data(filename="github_trending_repos.json"):
-            # Validate or initialize JSON file
-            if os.path.exists(filename):
-                try:
-                    with open(filename, 'r') as f:
-                        data = json.load(f)
-                        if 'repositories' not in data or not isinstance(data['repositories'], dict):
-                            raise ValueError("Invalid structure. Reinitializing.")
-                except (json.JSONDecodeError, ValueError):
-                    print("Invalid or corrupted file. Reinitializing the data structure.")
-                    data = {'repositories': {}}
-            else:
-                data = {'repositories': {}}
-            return data
+        with open(file_name, "rb") as file:
+            file_data = file.read()
+            response = supabase.storage.from_('github_trending_json').upload(f"trending/{file_name}", file_data)
 
-        def update_json_file(data, filename="github_trending_repos.json"):
-            # Load and validate existing data
-            existing_data = validate_existing_data(filename)
-
-            for repo in data:
-                name = repo['name']
-                if name not in existing_data['repositories']:
-                    # Add new repository to the data
-                    existing_data['repositories'][name] = {
-                        'link': repo['link'],
-                        'description': repo['description'],
-                        'historical_data': []
-                    }
-
-                # Update the repository's historical data
-                existing_data['repositories'][name]['historical_data'].append({
-                    'date': repo['scraped_at'],
-                    'stars': repo['stars'],
-                    'stars_today': repo['stars_today']
-                })
-
-            # Save the updated data back to the JSON file
-            with open(filename, 'w') as f:
-                json.dump(existing_data, f, indent=4)
-
-        if __name__ == "__main__":
-            trending_repos = scrape_trending_repos()
-            if trending_repos:
-                update_json_file(trending_repos)
-                print(f"Scraped {len(trending_repos)} trending repositories.")
-            else:
-                print("No repositories scraped.")
+        if 'error' not in response:
+            print(f"Successfully uploaded {file_name} to Supabase Storage.")
+        else:
+            print(f"Failed to upload {file_name}. Error: {response['error']}")
         EOF
-
-    - name: Check if there are changes
-      run: git diff --quiet || echo "Changes detected"
-
-    - name: Commit and push if the data has changed
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      run: |
-        git config user.name "GitHub Action"
-        git config user.email "actions@users.noreply.github.com"
-        git add github_trending_repos.json
-        timestamp=$(date -u)
-        git commit -m "Latest GitHub Trending Repositories: ${timestamp}" || echo "No changes to commit"
-        git push --force
