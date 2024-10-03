@@ -1,10 +1,9 @@
 name: Upload JSON to Supabase Storage
-# remove after testing
 
 on:
   workflow_dispatch:
   schedule:
-    - cron: '0 10 * * *'  # Example: Run daily at 10:00 AM UTC
+    - cron: '0 10 * * *'  # Run daily at 10:00 AM UTC
   push:
     branches:
       - main
@@ -43,10 +42,18 @@ jobs:
         # File to upload
         file_path = "github_trending_repos.json"
 
+        # Verify the file exists before uploading
+        if not os.path.exists(file_path):
+            print(f"File {file_path} does not exist.")
+            exit(1)
+
         # Upload file to Supabase Storage
         with open(file_path, "rb") as file:
             file_data = file.read()
             response = supabase.storage.from_('github_trending_json').upload(f"trending/{file_path}", file_data)
 
-        print(f"Uploaded file: {file_path}, Response: {response}")
+        if response.status_code == 200:
+            print(f"Successfully uploaded {file_path} to Supabase Storage.")
+        else:
+            print(f"Failed to upload {file_path}. Response: {response.json()}")
         EOF
