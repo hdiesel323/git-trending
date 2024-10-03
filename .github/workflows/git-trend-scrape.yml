@@ -1,4 +1,4 @@
-name: Scrape GitHub Trending Repositories
+name: Scrape GitHub Trending Repositories and Update JSON
 
 on:
   push:
@@ -7,7 +7,7 @@ on:
     - cron: '0 9 * * *'  # Run daily at 09:00 AM UTC
 
 jobs:
-  scrape:
+  scrape-and-update:
     runs-on: ubuntu-latest
 
     steps:
@@ -19,7 +19,7 @@ jobs:
       with:
         python-version: '3.x'
 
-    - name: Install Python dependencies
+    - name: Install dependencies
       run: |
         pip install requests beautifulsoup4
 
@@ -71,13 +71,24 @@ jobs:
 
             return repo_list
 
-        def update_json_file(data, filename="github_trending_repos.json"):
-            # Load existing data if the file exists
+        def validate_existing_data(filename="github_trending_repos.json"):
+            # Validate or initialize JSON file
             if os.path.exists(filename):
-                with open(filename, 'r') as f:
-                    existing_data = json.load(f)
+                try:
+                    with open(filename, 'r') as f:
+                        data = json.load(f)
+                        if 'repositories' not in data or not isinstance(data['repositories'], dict):
+                            raise ValueError("Invalid structure. Reinitializing.")
+                except (json.JSONDecodeError, ValueError):
+                    print("Invalid or corrupted file. Reinitializing the data structure.")
+                    data = {'repositories': {}}
             else:
-                existing_data = {'repositories': {}}
+                data = {'repositories': {}}
+            return data
+
+        def update_json_file(data, filename="github_trending_repos.json"):
+            # Load and validate existing data
+            existing_data = validate_existing_data(filename)
 
             for repo in data:
                 name = repo['name']
