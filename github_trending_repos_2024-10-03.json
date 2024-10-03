@@ -5,7 +5,7 @@
         "stars": 0,
         "stars_today": 1557,
         "description": "24/7 local AI screen & mic recording. Build AI apps that have the full context. Works with Ollama. Alternative to Rewind.ai. Open. Secure. You own your data. Rust.",
-        "scraped_at": "2024-10-03T01:16:52.816595"
+        "scraped_at": "2024-10-03T01:18:10.812423"
     },
     {
         "name": "exo-explore /exo",
@@ -13,7 +13,7 @@
         "stars": 0,
         "stars_today": 226,
         "description": "Run your own AI cluster at home with everyday devices \ud83d\udcf1\ud83d\udcbb \ud83d\udda5\ufe0f\u231a",
-        "scraped_at": "2024-10-03T01:16:52.816898"
+        "scraped_at": "2024-10-03T01:18:10.812735"
     },
     {
         "name": "godotengine /godot",
@@ -21,7 +21,7 @@
         "stars": 0,
         "stars_today": 150,
         "description": "Godot Engine \u2013 Multi-platform 2D and 3D game engine",
-        "scraped_at": "2024-10-03T01:16:52.817166"
+        "scraped_at": "2024-10-03T01:18:10.813013"
     },
     {
         "name": "unclecode /crawl4ai",
@@ -29,7 +29,7 @@
         "stars": 0,
         "stars_today": 1195,
         "description": "\ud83d\udd25\ud83d\udd77\ufe0f Crawl4AI: Open-source LLM Friendly Web Crawler & Scrapper",
-        "scraped_at": "2024-10-03T01:16:52.817426"
+        "scraped_at": "2024-10-03T01:18:10.813276"
     },
     {
         "name": "ToolJet /ToolJet",
@@ -37,7 +37,7 @@
         "stars": 0,
         "stars_today": 30,
         "description": "Low-code platform for building business applications. Connect to databases, cloud storages, GraphQL, API endpoints, Airtable, Google sheets, OpenAI, etc and build apps using drag and drop application builder. Built using JavaScript/TypeScript. \ud83d\ude80",
-        "scraped_at": "2024-10-03T01:16:52.817685"
+        "scraped_at": "2024-10-03T01:18:10.813538"
     },
     {
         "name": "mlc-ai /web-llm",
@@ -45,7 +45,7 @@
         "stars": 0,
         "stars_today": 123,
         "description": "High-performance In-browser LLM Inference Engine",
-        "scraped_at": "2024-10-03T01:16:52.817960"
+        "scraped_at": "2024-10-03T01:18:10.813812"
     },
     {
         "name": "EbookFoundation /free-programming-books",
@@ -53,7 +53,7 @@
         "stars": 0,
         "stars_today": 99,
         "description": "\ud83d\udcda Freely available programming books",
-        "scraped_at": "2024-10-03T01:16:52.818247"
+        "scraped_at": "2024-10-03T01:18:10.814105"
     },
     {
         "name": "dair-ai /Prompt-Engineering-Guide",
@@ -61,7 +61,7 @@
         "stars": 0,
         "stars_today": 107,
         "description": "\ud83d\udc19 Guides, papers, lecture, notebooks and resources for prompt engineering",
-        "scraped_at": "2024-10-03T01:16:52.818551"
+        "scraped_at": "2024-10-03T01:18:10.814416"
     },
     {
         "name": "All-Hands-AI /OpenHands",
@@ -69,7 +69,7 @@
         "stars": 0,
         "stars_today": 233,
         "description": "\ud83d\ude4c OpenHands: Code Less, Make More",
-        "scraped_at": "2024-10-03T01:16:52.818815"
+        "scraped_at": "2024-10-03T01:18:10.814693"
     },
     {
         "name": "openai /whisper",
@@ -77,7 +77,7 @@
         "stars": 0,
         "stars_today": 110,
         "description": "Robust Speech Recognition via Large-Scale Weak Supervision",
-        "scraped_at": "2024-10-03T01:16:52.819118"
+        "scraped_at": "2024-10-03T01:18:10.814951"
     },
     {
         "name": "pytorch /ao",
@@ -85,7 +85,7 @@
         "stars": 0,
         "stars_today": 59,
         "description": "PyTorch native quantization and sparsity for training and inference",
-        "scraped_at": "2024-10-03T01:16:52.819386"
+        "scraped_at": "2024-10-03T01:18:10.815224"
     },
     {
         "name": "mainmatter /100-exercises-to-learn-rust",
@@ -93,7 +93,7 @@
         "stars": 0,
         "stars_today": 322,
         "description": "A self-paced course to learn Rust, one exercise at a time.",
-        "scraped_at": "2024-10-03T01:16:52.819694"
+        "scraped_at": "2024-10-03T01:18:10.815534"
     },
     {
         "name": "github-linguist /linguist",
@@ -101,7 +101,7 @@
         "stars": 0,
         "stars_today": 4,
         "description": "Language Savant. If your repository's language is being reported incorrectly, send us a pull request!",
-        "scraped_at": "2024-10-03T01:16:52.819965"
+        "scraped_at": "2024-10-03T01:18:10.815805"
     },
     {
         "name": "continuedev /continue",
@@ -109,7 +109,7 @@
         "stars": 0,
         "stars_today": 291,
         "description": "\u23e9 Continue is the leading open-source AI code assistant. You can connect any models and any context to build custom autocomplete and chat experiences inside VS Code and JetBrains",
-        "scraped_at": "2024-10-03T01:16:52.820219"
+        "scraped_at": "2024-10-03T01:18:10.816062"
     },
     {
         "name": "juspay /hyperswitch",
@@ -117,7 +117,7 @@
         "stars": 0,
         "stars_today": 19,
         "description": "An open source payments switch written in Rust to make payments fast, reliable and affordable",
-        "scraped_at": "2024-10-03T01:16:52.820473"
+        "scraped_at": "2024-10-03T01:18:10.816316"
     },
     {
         "name": "TheAlgorithms /Java",
@@ -125,7 +125,7 @@
         "stars": 0,
         "stars_today": 23,
         "description": "All Algorithms implemented in Java",
-        "scraped_at": "2024-10-03T01:16:52.820733"
+        "scraped_at": "2024-10-03T01:18:10.816575"
     },
     {
         "name": "OpenBB-finance /OpenBB",
@@ -133,7 +133,7 @@
         "stars": 0,
         "stars_today": 298,
         "description": "Investment Research for Everyone, Everywhere.",
-        "scraped_at": "2024-10-03T01:16:52.821012"
+        "scraped_at": "2024-10-03T01:18:10.816844"
     },
     {
         "name": "freeCodeCamp /freeCodeCamp",
@@ -141,6 +141,6 @@
         "stars": 0,
         "stars_today": 92,
         "description": "freeCodeCamp.org's open-source codebase and curriculum. Learn to code for free.",
-        "scraped_at": "2024-10-03T01:16:52.821316"
+        "scraped_at": "2024-10-03T01:18:10.817152"
     }
 ]
