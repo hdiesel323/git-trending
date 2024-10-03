@@ -1,15 +1,13 @@
 name: Scrape GitHub Trending Repositories
 
 on:
+  push:
   workflow_dispatch:
   schedule:
-    - cron: '0 9 * * *'  # Scrape daily at 09:00 AM UTC
-  push:
-    branches:
-      - main
+    - cron: '0 10 * * *'  # Run daily at 10:00 AM UTC
 
 jobs:
-  scrape:
+  scrape-and-insert:
     runs-on: ubuntu-latest
 
     steps:
@@ -23,18 +21,27 @@ jobs:
 
     - name: Install Python Dependencies
       run: |
-        pip install requests beautifulsoup4
+        pip install requests beautifulsoup4 supabase
 
-    - name: Scrape GitHub Trending Repositories
+    - name: Scrape GitHub Trending Repositories and Insert into Supabase
+      env:
+        SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+        SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
       run: |
         python - <<EOF
         import requests
         from bs4 import BeautifulSoup
         import json
         from datetime import datetime
-        import re
+        import os
+        from supabase import create_client
 
-        # Scraping GitHub Trending
+        # Initialize Supabase client
+        SUPABASE_URL = os.getenv('SUPABASE_URL')
+        SUPABASE_KEY = os.getenv('SUPABASE_KEY')
+        supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
+
+        # GitHub Trending URL
         URL = 'https://github.com/trending'
         response = requests.get(URL)
         soup = BeautifulSoup(response.content, 'html.parser')
@@ -49,12 +56,10 @@ jobs:
             repo_link = 'https://github.com' + repo_link_tag['href'] if repo_link_tag else 'No link found'
 
             stars_tag = repo.find('a', class_='Link--muted d-inline-block mr-3')
-            stars_text = stars_tag.get_text(strip=True).replace(',', '') if stars_tag else 'No stars found'
-            stars = int(re.sub(r'[^\d]', '', stars_text.replace('k', '000'))) if stars_text != 'No stars found' else 0
+            stars = stars_tag.get_text(strip=True).replace(',', '') if stars_tag else 'No stars found'
 
             stars_today_tag = repo.find('span', class_='d-inline-block float-sm-right')
-            stars_today_text = stars_today_tag.get_text(strip=True).replace(',', '') if stars_today_tag else 'No stars today'
-            stars_today = int(re.sub(r'[^\d]', '', stars_today_text)) if stars_today_text != 'No stars today' else 0
+            stars_today = stars_today_tag.get_text(strip=True).replace(',', '') if stars_today_tag else 'No stars today'
 
             description_tag = repo.p
             description = description_tag.get_text(strip=True) if description_tag else 'No description'
@@ -62,8 +67,8 @@ jobs:
             repo_list.append({
                 'name': repo_name,
                 'link': repo_link,
-                'stars': stars,
-                'stars_today': stars_today,
+                'stars': int(stars.replace('k', '000')) if stars != 'No stars found' else 0,
+                'stars_today': int(stars_today.replace('k', '000')) if stars_today != 'No stars today' else 0,
                 'description': description,
                 'scraped_at': datetime.now().isoformat()
             })
@@ -73,12 +78,11 @@ jobs:
         file_name = f"github_trending_repos_{timestamp}.json"
         with open(file_name, 'w') as f:
             json.dump(repo_list, f, indent=4)
-        EOF
 
-    - name: Commit scraped JSON data
-      run: |
-        git config user.name "GitHub Action"
-        git config user.email "actions@users.noreply.github.com"
-        git add github_trending_repos_*.json
-        git commit -m "Scraped latest GitHub trending repositories"
-        git push
+        # Insert data into Supabase table
+        data = supabase.table('repositories').insert(repo_list).execute()
+        if data.get('error'):
+            print(f"Failed to insert into table: {data['error']}")
+        else:
+            print(f"Successfully inserted {len(repo_list)} repositories into the table.")
+        EOF
