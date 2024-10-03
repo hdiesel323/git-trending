@@ -3,7 +3,7 @@ name: Upload JSON to Supabase Storage
 on:
   workflow_dispatch:
   schedule:
-    - cron: '0 10 * * *'  # Run daily at 10:00 AM UTC
+    - cron: '0 11 * * *'  # Run daily at 11:00 AM UTC (after scraping is done)
   push:
     branches:
       - main
@@ -59,8 +59,6 @@ jobs:
 
             # Attempt to delete the file if it exists to avoid "Duplicate" error
             delete_response = bucket.remove([file_path])
-            
-            # Check if there are any errors in the delete_response (which is a list)
             if isinstance(delete_response, list) and any(item.get('error') for item in delete_response):
                 print(f"Warning: Could not delete existing file. Errors: {delete_response}")
             else:
@@ -71,11 +69,11 @@ jobs:
                 file_data = file.read()
                 response = bucket.upload(file_path, file_data)
             
-            # Check if the upload was successful using the status_code
-            if response.status_code == 200:
+            # Check if the upload was successful
+            if response.get('error') is None:
                 print(f"Successfully uploaded {latest_file} to Supabase Storage.")
             else:
-                print(f"Failed to upload {latest_file}. Status Code: {response.status_code}, Message: {response.json()}")
+                print(f"Failed to upload {latest_file}. Error: {response['error']}")
                 exit(1)
         except Exception as e:
             print(f"An error occurred while uploading the file: {str(e)}")
