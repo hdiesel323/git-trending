@@ -59,8 +59,12 @@ jobs:
 
             # Attempt to delete the file if it exists to avoid "Duplicate" error
             delete_response = bucket.remove([file_path])
-            if delete_response.get('error'):
-                print(f"Warning: Could not delete existing file. Error: {delete_response['error']}")
+            
+            # Check if there are any errors in the delete_response (which is a list)
+            if isinstance(delete_response, list) and any(item.get('error') for item in delete_response):
+                print(f"Warning: Could not delete existing file. Errors: {delete_response}")
+            else:
+                print(f"File {file_path} deleted successfully or it didn't exist.")
 
             # Upload the latest JSON file to Supabase Storage
             with open(latest_file, "rb") as file:
