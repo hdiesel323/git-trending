@@ -32,7 +32,6 @@ jobs:
         from datetime import datetime
         import os
 
-        # GitHub Trending URL
         URL = 'https://github.com/trending'
 
         def scrape_trending_repos():
@@ -66,13 +65,12 @@ jobs:
                     'stars': stars,
                     'stars_today': stars_today,
                     'description': description,
-                    'scraped_at': datetime.utcnow().isoformat()
+                    'scraped_at': datetime.now().isoformat()  # Replacing utcnow()
                 })
 
             return repo_list
 
         def update_json_file(data, filename="github_trending_repos.json"):
-            # Load existing data if the file exists
             if os.path.exists(filename):
                 with open(filename, 'r') as f:
                     existing_data = json.load(f)
@@ -82,21 +80,18 @@ jobs:
             for repo in data:
                 name = repo['name']
                 if name not in existing_data['repositories']:
-                    # Add new repository to the data
                     existing_data['repositories'][name] = {
                         'link': repo['link'],
                         'description': repo['description'],
                         'historical_data': []
                     }
 
-                # Update the repository's historical data
                 existing_data['repositories'][name]['historical_data'].append({
                     'date': repo['scraped_at'],
                     'stars': repo['stars'],
                     'stars_today': repo['stars_today']
                 })
 
-            # Save the updated data back to the JSON file
             with open(filename, 'w') as f:
                 json.dump(existing_data, f, indent=4)
 
