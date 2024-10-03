@@ -1,113 +1,202 @@
 {
-    "timestamp": "2024-10-03T00:38:22.481954",
-    "repositories": [
-        {
-            "name": "mediar-ai /screenpipe",
+    "repositories": {
+        "mediar-ai /screenpipe": {
             "link": "https://github.com/mediar-ai/screenpipe",
-            "stars": "No stars found",
-            "description": "24/7 local AI screen & mic recording. Build AI apps that have the full context. Works with Ollama. Alternative to Rewind.ai. Open. Secure. You own your data. Rust."
+            "description": "24/7 local AI screen & mic recording. Build AI apps that have the full context. Works with Ollama. Alternative to Rewind.ai. Open. Secure. You own your data. Rust.",
+            "historical_data": [
+                {
+                    "date": "2024-10-03T00:51:08.266935",
+                    "stars": "No stars found",
+                    "stars_today": "1,557 stars today"
+                }
+            ]
         },
-        {
-            "name": "exo-explore /exo",
+        "exo-explore /exo": {
             "link": "https://github.com/exo-explore/exo",
-            "stars": "No stars found",
-            "description": "Run your own AI cluster at home with everyday devices \ud83d\udcf1\ud83d\udcbb \ud83d\udda5\ufe0f\u231a"
+            "description": "Run your own AI cluster at home with everyday devices \ud83d\udcf1\ud83d\udcbb \ud83d\udda5\ufe0f\u231a",
+            "historical_data": [
+                {
+                    "date": "2024-10-03T00:51:08.267243",
+                    "stars": "No stars found",
+                    "stars_today": "226 stars today"
+                }
+            ]
         },
-        {
-            "name": "godotengine /godot",
+        "godotengine /godot": {
             "link": "https://github.com/godotengine/godot",
-            "stars": "No stars found",
-            "description": "Godot Engine \u2013 Multi-platform 2D and 3D game engine"
+            "description": "Godot Engine \u2013 Multi-platform 2D and 3D game engine",
+            "historical_data": [
+                {
+                    "date": "2024-10-03T00:51:08.267503",
+                    "stars": "No stars found",
+                    "stars_today": "150 stars today"
+                }
+            ]
         },
-        {
-            "name": "unclecode /crawl4ai",
+        "unclecode /crawl4ai": {
             "link": "https://github.com/unclecode/crawl4ai",
-            "stars": "No stars found",
-            "description": "\ud83d\udd25\ud83d\udd77\ufe0f Crawl4AI: Open-source LLM Friendly Web Crawler & Scrapper"
+            "description": "\ud83d\udd25\ud83d\udd77\ufe0f Crawl4AI: Open-source LLM Friendly Web Crawler & Scrapper",
+            "historical_data": [
+                {
+                    "date": "2024-10-03T00:51:08.267759",
+                    "stars": "No stars found",
+                    "stars_today": "1,195 stars today"
+                }
+            ]
         },
-        {
-            "name": "ToolJet /ToolJet",
+        "ToolJet /ToolJet": {
             "link": "https://github.com/ToolJet/ToolJet",
-            "stars": "No stars found",
-            "description": "Low-code platform for building business applications. Connect to databases, cloud storages, GraphQL, API endpoints, Airtable, Google sheets, OpenAI, etc and build apps using drag and drop application builder. Built using JavaScript/TypeScript. \ud83d\ude80"
+            "description": "Low-code platform for building business applications. Connect to databases, cloud storages, GraphQL, API endpoints, Airtable, Google sheets, OpenAI, etc and build apps using drag and drop application builder. Built using JavaScript/TypeScript. \ud83d\ude80",
+            "historical_data": [
+                {
+                    "date": "2024-10-03T00:51:08.268010",
+                    "stars": "No stars found",
+                    "stars_today": "30 stars today"
+                }
+            ]
         },
-        {
-            "name": "mlc-ai /web-llm",
+        "mlc-ai /web-llm": {
             "link": "https://github.com/mlc-ai/web-llm",
-            "stars": "No stars found",
-            "description": "High-performance In-browser LLM Inference Engine"
+            "description": "High-performance In-browser LLM Inference Engine",
+            "historical_data": [
+                {
+                    "date": "2024-10-03T00:51:08.268279",
+                    "stars": "No stars found",
+                    "stars_today": "123 stars today"
+                }
+            ]
         },
-        {
-            "name": "EbookFoundation /free-programming-books",
+        "EbookFoundation /free-programming-books": {
             "link": "https://github.com/EbookFoundation/free-programming-books",
-            "stars": "No stars found",
-            "description": "\ud83d\udcda Freely available programming books"
+            "description": "\ud83d\udcda Freely available programming books",
+            "historical_data": [
+                {
+                    "date": "2024-10-03T00:51:08.268559",
+                    "stars": "No stars found",
+                    "stars_today": "99 stars today"
+                }
+            ]
         },
-        {
-            "name": "dair-ai /Prompt-Engineering-Guide",
+        "dair-ai /Prompt-Engineering-Guide": {
             "link": "https://github.com/dair-ai/Prompt-Engineering-Guide",
-            "stars": "No stars found",
-            "description": "\ud83d\udc19 Guides, papers, lecture, notebooks and resources for prompt engineering"
+            "description": "\ud83d\udc19 Guides, papers, lecture, notebooks and resources for prompt engineering",
+            "historical_data": [
+                {
+                    "date": "2024-10-03T00:51:08.268854",
+                    "stars": "No stars found",
+                    "stars_today": "107 stars today"
+                }
+            ]
         },
-        {
-            "name": "All-Hands-AI /OpenHands",
+        "All-Hands-AI /OpenHands": {
             "link": "https://github.com/All-Hands-AI/OpenHands",
-            "stars": "No stars found",
-            "description": "\ud83d\ude4c OpenHands: Code Less, Make More"
+            "description": "\ud83d\ude4c OpenHands: Code Less, Make More",
+            "historical_data": [
+                {
+                    "date": "2024-10-03T00:51:08.269118",
+                    "stars": "No stars found",
+                    "stars_today": "233 stars today"
+                }
+            ]
         },
-        {
-            "name": "openai /whisper",
+        "openai /whisper": {
             "link": "https://github.com/openai/whisper",
-            "stars": "No stars found",
-            "description": "Robust Speech Recognition via Large-Scale Weak Supervision"
+            "description": "Robust Speech Recognition via Large-Scale Weak Supervision",
+            "historical_data": [
+                {
+                    "date": "2024-10-03T00:51:08.269367",
+                    "stars": "No stars found",
+                    "stars_today": "110 stars today"
+                }
+            ]
         },
-        {
-            "name": "pytorch /ao",
+        "pytorch /ao": {
             "link": "https://github.com/pytorch/ao",
-            "stars": "No stars found",
-            "description": "PyTorch native quantization and sparsity for training and inference"
+            "description": "PyTorch native quantization and sparsity for training and inference",
+            "historical_data": [
+                {
+                    "date": "2024-10-03T00:51:08.269626",
+                    "stars": "No stars found",
+                    "stars_today": "59 stars today"
+                }
+            ]
         },
-        {
-            "name": "mainmatter /100-exercises-to-learn-rust",
+        "mainmatter /100-exercises-to-learn-rust": {
             "link": "https://github.com/mainmatter/100-exercises-to-learn-rust",
-            "stars": "No stars found",
-            "description": "A self-paced course to learn Rust, one exercise at a time."
+            "description": "A self-paced course to learn Rust, one exercise at a time.",
+            "historical_data": [
+                {
+                    "date": "2024-10-03T00:51:08.269931",
+                    "stars": "No stars found",
+                    "stars_today": "322 stars today"
+                }
+            ]
         },
-        {
-            "name": "github-linguist /linguist",
+        "github-linguist /linguist": {
             "link": "https://github.com/github-linguist/linguist",
-            "stars": "No stars found",
-            "description": "Language Savant. If your repository's language is being reported incorrectly, send us a pull request!"
+            "description": "Language Savant. If your repository's language is being reported incorrectly, send us a pull request!",
+            "historical_data": [
+                {
+                    "date": "2024-10-03T00:51:08.270195",
+                    "stars": "No stars found",
+                    "stars_today": "4 stars today"
+                }
+            ]
         },
-        {
-            "name": "continuedev /continue",
+        "continuedev /continue": {
             "link": "https://github.com/continuedev/continue",
-            "stars": "No stars found",
-            "description": "\u23e9 Continue is the leading open-source AI code assistant. You can connect any models and any context to build custom autocomplete and chat experiences inside VS Code and JetBrains"
+            "description": "\u23e9 Continue is the leading open-source AI code assistant. You can connect any models and any context to build custom autocomplete and chat experiences inside VS Code and JetBrains",
+            "historical_data": [
+                {
+                    "date": "2024-10-03T00:51:08.270440",
+                    "stars": "No stars found",
+                    "stars_today": "291 stars today"
+                }
+            ]
         },
-        {
-            "name": "juspay /hyperswitch",
+        "juspay /hyperswitch": {
             "link": "https://github.com/juspay/hyperswitch",
-            "stars": "No stars found",
-            "description": "An open source payments switch written in Rust to make payments fast, reliable and affordable"
+            "description": "An open source payments switch written in Rust to make payments fast, reliable and affordable",
+            "historical_data": [
+                {
+                    "date": "2024-10-03T00:51:08.270684",
+                    "stars": "No stars found",
+                    "stars_today": "19 stars today"
+                }
+            ]
         },
-        {
-            "name": "TheAlgorithms /Java",
+        "TheAlgorithms /Java": {
             "link": "https://github.com/TheAlgorithms/Java",
-            "stars": "No stars found",
-            "description": "All Algorithms implemented in Java"
+            "description": "All Algorithms implemented in Java",
+            "historical_data": [
+                {
+                    "date": "2024-10-03T00:51:08.270928",
+                    "stars": "No stars found",
+                    "stars_today": "23 stars today"
+                }
+            ]
         },
-        {
-            "name": "OpenBB-finance /OpenBB",
+        "OpenBB-finance /OpenBB": {
             "link": "https://github.com/OpenBB-finance/OpenBB",
-            "stars": "No stars found",
-            "description": "Investment Research for Everyone, Everywhere."
+            "description": "Investment Research for Everyone, Everywhere.",
+            "historical_data": [
+                {
+                    "date": "2024-10-03T00:51:08.271207",
+                    "stars": "No stars found",
+                    "stars_today": "298 stars today"
+                }
+            ]
         },
-        {
-            "name": "freeCodeCamp /freeCodeCamp",
+        "freeCodeCamp /freeCodeCamp": {
             "link": "https://github.com/freeCodeCamp/freeCodeCamp",
-            "stars": "No stars found",
-            "description": "freeCodeCamp.org's open-source codebase and curriculum. Learn to code for free."
+            "description": "freeCodeCamp.org's open-source codebase and curriculum. Learn to code for free.",
+            "historical_data": [
+                {
+                    "date": "2024-10-03T00:51:08.271507",
+                    "stars": "No stars found",
+                    "stars_today": "92 stars today"
+                }
+            ]
         }
-    ]
+    }
 }
