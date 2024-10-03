@@ -1,13 +1,15 @@
-name: Scrape GitHub Trending Repositories
+name: Scrape GitHub Trending and Upload to Supabase
 
 on:
-  push:
   workflow_dispatch:
   schedule:
     - cron: '0 10 * * *'  # Run daily at 10:00 AM UTC
+  push:
+    branches:
+      - main
 
 jobs:
-  scrape-and-insert:
+  scrape-and-upload:
     runs-on: ubuntu-latest
 
     steps:
@@ -19,11 +21,12 @@ jobs:
       with:
         python-version: '3.x'
 
-    - name: Install Python Dependencies
+    - name: Install dependencies
       run: |
-        pip install requests beautifulsoup4 supabase
+        pip install supabase
+        pip install requests beautifulsoup4
 
-    - name: Scrape GitHub Trending Repositories and Insert into Supabase
+    - name: Scrape GitHub Trending and Insert to Supabase
       env:
         SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
         SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
@@ -35,6 +38,7 @@ jobs:
         from datetime import datetime
         import os
         from supabase import create_client
+        import re
 
         # Initialize Supabase client
         SUPABASE_URL = os.getenv('SUPABASE_URL')
@@ -49,26 +53,37 @@ jobs:
         repo_list = []
         repos = soup.find_all('article', class_='Box-row')
 
+        # Regular expression to extract numeric values
+        numeric_regex = re.compile(r'(\\d+(?:,\\d+)*(?:\\.\\d+)?k?)')
+
         for repo in repos:
             repo_name_tag = repo.find('h2', class_='h3')
-            repo_name = repo_name_tag.get_text(strip=True).replace('\n', ' ') if repo_name_tag else 'No name found'
+            repo_name = repo_name_tag.get_text(strip=True).replace('\\n', ' ') if repo_name_tag else 'No name found'
             repo_link_tag = repo_name_tag.find('a') if repo_name_tag else None
             repo_link = 'https://github.com' + repo_link_tag['href'] if repo_link_tag else 'No link found'
 
             stars_tag = repo.find('a', class_='Link--muted d-inline-block mr-3')
-            stars = stars_tag.get_text(strip=True).replace(',', '') if stars_tag else 'No stars found'
+            stars = stars_tag.get_text(strip=True) if stars_tag else 'No stars found'
 
             stars_today_tag = repo.find('span', class_='d-inline-block float-sm-right')
-            stars_today = stars_today_tag.get_text(strip=True).replace(',', '') if stars_today_tag else 'No stars today'
+            stars_today = stars_today_tag.get_text(strip=True) if stars_today_tag else 'No stars today'
 
             description_tag = repo.p
             description = description_tag.get_text(strip=True) if description_tag else 'No description'
 
+            # Extract numeric part of the stars and stars_today strings
+            stars_numeric = numeric_regex.search(stars)
+            stars_today_numeric = numeric_regex.search(stars_today)
+
+            # Convert to integers
+            stars_value = int(stars_numeric.group(0).replace(',', '').replace('k', '000')) if stars_numeric else 0
+            stars_today_value = int(stars_today_numeric.group(0).replace(',', '').replace('k', '000')) if stars_today_numeric else 0
+
             repo_list.append({
                 'name': repo_name,
                 'link': repo_link,
-                'stars': int(stars.replace('k', '000')) if stars != 'No stars found' else 0,
-                'stars_today': int(stars_today.replace('k', '000')) if stars_today != 'No stars today' else 0,
+                'stars': stars_value,
+                'stars_today': stars_today_value,
                 'description': description,
                 'scraped_at': datetime.now().isoformat()
             })
