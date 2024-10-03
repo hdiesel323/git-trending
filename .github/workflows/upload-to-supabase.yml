@@ -3,7 +3,7 @@ name: Upload JSON to Supabase Storage
 on:
   workflow_dispatch:
   schedule:
-    - cron: '0 10 * * *'  # Upload daily at 10:00 AM UTC
+    - cron: '0 10 * * *'  # Run daily at 10:00 AM UTC
   push:
     branches:
       - main
@@ -44,11 +44,11 @@ jobs:
 
         # Find the latest JSON file
         json_files = [f for f in os.listdir('.') if f.startswith('github_trending_repos_') and f.endswith('.json')]
-        
+
         if not json_files:
             print("No JSON files found for upload.")
             exit(1)
-        
+
         latest_file = sorted(json_files)[-1]
         print(f"Found latest file: {latest_file}")
 
@@ -58,10 +58,11 @@ jobs:
                 file_data = file.read()
                 response = supabase.storage.from_('github_trending_json').upload(f"trending/{latest_file}", file_data)
             
-            if 'error' not in response:
+            # Check if the upload was successful using the response's .status_code attribute
+            if response.status_code == 200:
                 print(f"Successfully uploaded {latest_file} to Supabase Storage.")
             else:
-                print(f"Failed to upload {latest_file}. Error: {response['error']}")
+                print(f"Failed to upload {latest_file}. Response status: {response.status_code}. Message: {response.text}")
                 exit(1)
         except Exception as e:
             print(f"An error occurred while uploading the file: {str(e)}")
