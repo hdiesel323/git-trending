@@ -3,17 +3,17 @@ name: Scrape GitHub Trending Repositories
 on:
   workflow_dispatch:
   schedule:
-    - cron: '0 9 * * *'  # Run daily at 09:00 AM UTC
+    - cron: '0 9 * * *'  # Scrape daily at 09:00 AM UTC
   push:
     branches:
       - main
 
 jobs:
-  scrape-and-store:
+  scrape:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Check out the repo
+    - name: Check out this repo
       uses: actions/checkout@v3
 
     - name: Set up Python
@@ -21,17 +21,18 @@ jobs:
       with:
         python-version: '3.x'
 
-    - name: Install dependencies
-      run: pip install requests beautifulsoup4 supabase
+    - name: Install Python Dependencies
+      run: |
+        pip install requests beautifulsoup4
 
-    - name: Scrape GitHub Trending and Save JSON
+    - name: Scrape GitHub Trending Repositories
       run: |
         python - <<EOF
         import requests
         from bs4 import BeautifulSoup
         import json
         from datetime import datetime
-        import os
+        import re
 
         # Scraping GitHub Trending
         URL = 'https://github.com/trending'
@@ -48,10 +49,12 @@ jobs:
             repo_link = 'https://github.com' + repo_link_tag['href'] if repo_link_tag else 'No link found'
 
             stars_tag = repo.find('a', class_='Link--muted d-inline-block mr-3')
-            stars = stars_tag.get_text(strip=True).replace(',', '') if stars_tag else 'No stars found'
+            stars_text = stars_tag.get_text(strip=True).replace(',', '') if stars_tag else 'No stars found'
+            stars = int(re.sub(r'[^\d]', '', stars_text.replace('k', '000'))) if stars_text != 'No stars found' else 0
 
             stars_today_tag = repo.find('span', class_='d-inline-block float-sm-right')
-            stars_today = stars_today_tag.get_text(strip=True).replace(',', '') if stars_today_tag else 'No stars today'
+            stars_today_text = stars_today_tag.get_text(strip=True).replace(',', '') if stars_today_tag else 'No stars today'
+            stars_today = int(re.sub(r'[^\d]', '', stars_today_text)) if stars_today_text != 'No stars today' else 0
 
             description_tag = repo.p
             description = description_tag.get_text(strip=True) if description_tag else 'No description'
@@ -59,8 +62,8 @@ jobs:
             repo_list.append({
                 'name': repo_name,
                 'link': repo_link,
-                'stars': int(stars.replace('k', '000')) if stars != 'No stars found' else 0,
-                'stars_today': int(stars_today.replace('k', '000')) if stars_today != 'No stars today' else 0,
+                'stars': stars,
+                'stars_today': stars_today,
                 'description': description,
                 'scraped_at': datetime.now().isoformat()
             })
@@ -70,19 +73,12 @@ jobs:
         file_name = f"github_trending_repos_{timestamp}.json"
         with open(file_name, 'w') as f:
             json.dump(repo_list, f, indent=4)
-
-        # Upload to Supabase Storage
-        from supabase import create_client
-        SUPABASE_URL = os.getenv('SUPABASE_URL')
-        SUPABASE_KEY = os.getenv('SUPABASE_KEY')
-        supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
-
-        with open(file_name, "rb") as file:
-            file_data = file.read()
-            response = supabase.storage.from_('github_trending_json').upload(f"trending/{file_name}", file_data)
-
-        if 'error' not in response:
-            print(f"Successfully uploaded {file_name} to Supabase Storage.")
-        else:
-            print(f"Failed to upload {file_name}. Error: {response['error']}")
         EOF
+
+    - name: Commit scraped JSON data
+      run: |
+        git config user.name "GitHub Action"
+        git config user.email "actions@users.noreply.github.com"
+        git add github_trending_repos_*.json
+        git commit -m "Scraped latest GitHub trending repositories"
+        git push
