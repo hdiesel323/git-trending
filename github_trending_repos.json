@@ -1,149 +1,113 @@
 {
-    "timestamp": "2024-10-01T06:59:13.369665",
+    "timestamp": "2024-10-03T00:30:31.395037",
     "repositories": [
         {
-            "name": "unclecode /crawl4ai",
-            "link": "https://github.com/unclecode/crawl4ai",
+            "name": "mediar-ai /screenpipe",
+            "link": "https://github.com/mediar-ai/screenpipe",
             "stars": "No stars found",
-            "stars_today": "2,345",
-            "description": "\ud83d\udd25\ud83d\udd77\ufe0f Crawl4AI: Open-source LLM Friendly Web Crawler & Scrapper",
-            "scraped_at": "2024-10-01T06:59:13.364409"
+            "description": "24/7 local AI screen & mic recording. Build AI apps that have the full context. Works with Ollama. Alternative to Rewind.ai. Open. Secure. You own your data. Rust."
         },
         {
             "name": "exo-explore /exo",
             "link": "https://github.com/exo-explore/exo",
             "stars": "No stars found",
-            "stars_today": "347",
-            "description": "Run your own AI cluster at home with everyday devices \ud83d\udcf1\ud83d\udcbb \ud83d\udda5\ufe0f\u231a",
-            "scraped_at": "2024-10-01T06:59:13.364898"
+            "description": "Run your own AI cluster at home with everyday devices \ud83d\udcf1\ud83d\udcbb \ud83d\udda5\ufe0f\u231a"
         },
         {
-            "name": "mediar-ai /screenpipe",
-            "link": "https://github.com/mediar-ai/screenpipe",
+            "name": "godotengine /godot",
+            "link": "https://github.com/godotengine/godot",
             "stars": "No stars found",
-            "stars_today": "553",
-            "description": "24/7 local AI screen & mic recording. Build AI apps that have the full context. Works with Ollama. Alternative to Rewind.ai. Open. Secure. You own your data. Rust.",
-            "scraped_at": "2024-10-01T06:59:13.365208"
+            "description": "Godot Engine \u2013 Multi-platform 2D and 3D game engine"
         },
         {
-            "name": "tw93 /Pake",
-            "link": "https://github.com/tw93/Pake",
+            "name": "unclecode /crawl4ai",
+            "link": "https://github.com/unclecode/crawl4ai",
             "stars": "No stars found",
-            "stars_today": "358",
-            "description": "\ud83e\udd31\ud83c\udffb Turn any webpage into a desktop app with Rust. \ud83e\udd31\ud83c\udffb \u5229\u7528 Rust \u8f7b\u677e\u6784\u5efa\u8f7b\u91cf\u7ea7\u591a\u7aef\u684c\u9762\u5e94\u7528",
-            "scraped_at": "2024-10-01T06:59:13.365552"
+            "description": "\ud83d\udd25\ud83d\udd77\ufe0f Crawl4AI: Open-source LLM Friendly Web Crawler & Scrapper"
         },
         {
-            "name": "maybe-finance /maybe",
-            "link": "https://github.com/maybe-finance/maybe",
+            "name": "ToolJet /ToolJet",
+            "link": "https://github.com/ToolJet/ToolJet",
             "stars": "No stars found",
-            "stars_today": "292",
-            "description": "The OS for your personal finances",
-            "scraped_at": "2024-10-01T06:59:13.365813"
+            "description": "Low-code platform for building business applications. Connect to databases, cloud storages, GraphQL, API endpoints, Airtable, Google sheets, OpenAI, etc and build apps using drag and drop application builder. Built using JavaScript/TypeScript. \ud83d\ude80"
+        },
+        {
+            "name": "mlc-ai /web-llm",
+            "link": "https://github.com/mlc-ai/web-llm",
+            "stars": "No stars found",
+            "description": "High-performance In-browser LLM Inference Engine"
         },
         {
             "name": "EbookFoundation /free-programming-books",
             "link": "https://github.com/EbookFoundation/free-programming-books",
             "stars": "No stars found",
-            "stars_today": "121",
-            "description": "\ud83d\udcda Freely available programming books",
-            "scraped_at": "2024-10-01T06:59:13.366100"
+            "description": "\ud83d\udcda Freely available programming books"
         },
         {
-            "name": "kamranahmedse /developer-roadmap",
-            "link": "https://github.com/kamranahmedse/developer-roadmap",
+            "name": "dair-ai /Prompt-Engineering-Guide",
+            "link": "https://github.com/dair-ai/Prompt-Engineering-Guide",
             "stars": "No stars found",
-            "stars_today": "167",
-            "description": "Interactive roadmaps, guides and other educational content to help developers grow in their careers.",
-            "scraped_at": "2024-10-01T06:59:13.366398"
+            "description": "\ud83d\udc19 Guides, papers, lecture, notebooks and resources for prompt engineering"
         },
         {
-            "name": "paul-gauthier /aider",
-            "link": "https://github.com/paul-gauthier/aider",
+            "name": "All-Hands-AI /OpenHands",
+            "link": "https://github.com/All-Hands-AI/OpenHands",
             "stars": "No stars found",
-            "stars_today": "106",
-            "description": "aider is AI pair programming in your terminal",
-            "scraped_at": "2024-10-01T06:59:13.366668"
+            "description": "\ud83d\ude4c OpenHands: Code Less, Make More"
         },
         {
-            "name": "ente-io /ente",
-            "link": "https://github.com/ente-io/ente",
+            "name": "openai /whisper",
+            "link": "https://github.com/openai/whisper",
             "stars": "No stars found",
-            "stars_today": "52",
-            "description": "Fully open source, End to End Encrypted alternative to Google Photos and Apple Photos",
-            "scraped_at": "2024-10-01T06:59:13.366978"
+            "description": "Robust Speech Recognition via Large-Scale Weak Supervision"
         },
         {
-            "name": "Ryujinx /Ryujinx",
-            "link": "https://github.com/Ryujinx/Ryujinx",
+            "name": "pytorch /ao",
+            "link": "https://github.com/pytorch/ao",
             "stars": "No stars found",
-            "stars_today": "25",
-            "description": "Experimental Nintendo Switch Emulator written in C#",
-            "scraped_at": "2024-10-01T06:59:13.367235"
+            "description": "PyTorch native quantization and sparsity for training and inference"
         },
         {
-            "name": "microsoft /RD-Agent",
-            "link": "https://github.com/microsoft/RD-Agent",
+            "name": "mainmatter /100-exercises-to-learn-rust",
+            "link": "https://github.com/mainmatter/100-exercises-to-learn-rust",
             "stars": "No stars found",
-            "stars_today": "20",
-            "description": "Research and development (R&D) is crucial for the enhancement of industrial productivity, especially in the AI era, where the core aspects of R&D are mainly focused on data and models. We are committed to automate these high-value generic R&D processes through our open source R&D automation tool RD-Agent, which let AI drive data-driven AI.",
-            "scraped_at": "2024-10-01T06:59:13.367497"
+            "description": "A self-paced course to learn Rust, one exercise at a time."
         },
         {
-            "name": "krishnadey30 /LeetCode-Questions-CompanyWise",
-            "link": "https://github.com/krishnadey30/LeetCode-Questions-CompanyWise",
+            "name": "github-linguist /linguist",
+            "link": "https://github.com/github-linguist/linguist",
             "stars": "No stars found",
-            "stars_today": "73",
-            "description": "Contains Company Wise Questions sorted based on Frequency and all time",
-            "scraped_at": "2024-10-01T06:59:13.367739"
+            "description": "Language Savant. If your repository's language is being reported incorrectly, send us a pull request!"
         },
         {
-            "name": "kestra-io /kestra",
-            "link": "https://github.com/kestra-io/kestra",
+            "name": "continuedev /continue",
+            "link": "https://github.com/continuedev/continue",
             "stars": "No stars found",
-            "stars_today": "521",
-            "description": "Orchestration and automation platform to execute millions of scheduled and event-driven workflows declaratively in code and from the UI",
-            "scraped_at": "2024-10-01T06:59:13.367994"
+            "description": "\u23e9 Continue is the leading open-source AI code assistant. You can connect any models and any context to build custom autocomplete and chat experiences inside VS Code and JetBrains"
         },
         {
-            "name": "Cinnamon /kotaemon",
-            "link": "https://github.com/Cinnamon/kotaemon",
+            "name": "juspay /hyperswitch",
+            "link": "https://github.com/juspay/hyperswitch",
             "stars": "No stars found",
-            "stars_today": "224",
-            "description": "An open-source RAG-based tool for chatting with your documents.",
-            "scraped_at": "2024-10-01T06:59:13.368246"
+            "description": "An open source payments switch written in Rust to make payments fast, reliable and affordable"
         },
         {
-            "name": "immich-app /immich",
-            "link": "https://github.com/immich-app/immich",
+            "name": "TheAlgorithms /Java",
+            "link": "https://github.com/TheAlgorithms/Java",
             "stars": "No stars found",
-            "stars_today": "364",
-            "description": "High performance self-hosted photo and video management solution.",
-            "scraped_at": "2024-10-01T06:59:13.368510"
+            "description": "All Algorithms implemented in Java"
         },
         {
-            "name": "RVC-Boss /GPT-SoVITS",
-            "link": "https://github.com/RVC-Boss/GPT-SoVITS",
+            "name": "OpenBB-finance /OpenBB",
+            "link": "https://github.com/OpenBB-finance/OpenBB",
             "stars": "No stars found",
-            "stars_today": "47",
-            "description": "1 min voice data can also be used to train a good TTS model! (few shot voice cloning)",
-            "scraped_at": "2024-10-01T06:59:13.368760"
+            "description": "Investment Research for Everyone, Everywhere."
         },
         {
-            "name": "AUTOMATIC1111 /stable-diffusion-webui",
-            "link": "https://github.com/AUTOMATIC1111/stable-diffusion-webui",
+            "name": "freeCodeCamp /freeCodeCamp",
+            "link": "https://github.com/freeCodeCamp/freeCodeCamp",
             "stars": "No stars found",
-            "stars_today": "57",
-            "description": "Stable Diffusion web UI",
-            "scraped_at": "2024-10-01T06:59:13.369009"
-        },
-        {
-            "name": "Hannibal046 /Awesome-LLM",
-            "link": "https://github.com/Hannibal046/Awesome-LLM",
-            "stars": "No stars found",
-            "stars_today": "101",
-            "description": "Awesome-LLM: a curated list of Large Language Model",
-            "scraped_at": "2024-10-01T06:59:13.369235"
+            "description": "freeCodeCamp.org's open-source codebase and curriculum. Learn to code for free."
         }
     ]
 }
