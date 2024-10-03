@@ -52,17 +52,26 @@ jobs:
         latest_file = sorted(json_files)[-1]
         print(f"Found latest file: {latest_file}")
 
-        # Upload the latest JSON file to Supabase Storage
+        # Check if the file already exists in Supabase storage
         try:
+            bucket = supabase.storage.from_('github_trending_json')
+            file_path = f"trending/{latest_file}"
+
+            # Attempt to delete the file if it exists to avoid "Duplicate" error
+            delete_response = bucket.remove([file_path])
+            if delete_response.get('error'):
+                print(f"Warning: Could not delete existing file. Error: {delete_response['error']}")
+
+            # Upload the latest JSON file to Supabase Storage
             with open(latest_file, "rb") as file:
                 file_data = file.read()
-                response = supabase.storage.from_('github_trending_json').upload(f"trending/{latest_file}", file_data)
+                response = bucket.upload(file_path, file_data)
             
-            # Check if the upload was successful using the response's .status_code attribute
-            if response.status_code == 200:
+            # Check if the upload was successful
+            if response.get('error') is None:
                 print(f"Successfully uploaded {latest_file} to Supabase Storage.")
             else:
-                print(f"Failed to upload {latest_file}. Response status: {response.status_code}. Message: {response.text}")
+                print(f"Failed to upload {latest_file}. Error: {response['error']}")
                 exit(1)
         except Exception as e:
             print(f"An error occurred while uploading the file: {str(e)}")
