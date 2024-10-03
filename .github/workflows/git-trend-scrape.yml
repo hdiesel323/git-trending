@@ -8,7 +8,6 @@ on:
 
 permissions:
   contents: write
-  workflows: write
 
 jobs:
   scrape:
@@ -56,6 +55,7 @@ jobs:
                 # Extracting repository details
                 repo_name_tag = repo.find('h2', class_='h3')
                 repo_name = repo_name_tag.get_text(strip=True).replace('\n', ' ') if repo_name_tag else 'No name found'
+
                 repo_link_tag = repo_name_tag.find('a') if repo_name_tag else None
                 repo_link = 'https://github.com' + repo_link_tag['href'] if repo_link_tag else 'No link found'
 
