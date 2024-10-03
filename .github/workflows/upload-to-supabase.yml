@@ -47,11 +47,11 @@ jobs:
             print(f"File {file_path} does not exist.")
             exit(1)
 
-        # Upload file to Supabase Storage
+        # Upload file to Supabase Storage with upsert (overwrite if exists)
         try:
             with open(file_path, "rb") as file:
                 file_data = file.read()
-                response = supabase.storage.from_('github_trending_json').upload(f"trending/{file_path}", file_data)
+                response = supabase.storage.from_('github_trending_json').upload(f"trending/{file_path}", file_data, upsert=True)
 
             # Check if the upload was successful
             if 'error' not in response:
