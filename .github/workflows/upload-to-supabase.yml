@@ -71,11 +71,11 @@ jobs:
                 file_data = file.read()
                 response = bucket.upload(file_path, file_data)
             
-            # Check if the upload was successful
-            if response.get('error') is None:
+            # Check if the upload was successful using the status_code
+            if response.status_code == 200:
                 print(f"Successfully uploaded {latest_file} to Supabase Storage.")
             else:
-                print(f"Failed to upload {latest_file}. Error: {response['error']}")
+                print(f"Failed to upload {latest_file}. Status Code: {response.status_code}, Message: {response.json()}")
                 exit(1)
         except Exception as e:
             print(f"An error occurred while uploading the file: {str(e)}")
